@@ -6,17 +6,17 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Bed;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.PiglinBarterEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -28,14 +28,21 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @ApiStatus.Experimental
 
 public class EntityListener implements Listener {
 
+    // Data tracking for death messages
+    private final Map<UUID, ItemStack> lastHitWeapon = new HashMap<>();
+    private final Set<UUID> lastHitProjectile = new HashSet<>();
+
+    // Data tracking for custom bed bomb logic
+    Location explosionLoc = null;
+
     public void GameEnd(String winnerMessage, NamedTextColor color) {
+        // Call this when the game ends
         Component mainTitle = Component.text(winnerMessage, color).decoration(TextDecoration.BOLD, true);
         Title.Times times = Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(3000), Duration.ofMillis(500));
         Title title = Title.title(mainTitle, Component.empty(), times);
@@ -52,6 +59,33 @@ public class EntityListener implements Listener {
             if (p.getKiller() != null) {
                 ItemStack playerHead = MMFunctions.ConsumablePlayerHead(p);
                 event.getDrops().add(playerHead);
+                boolean directHit = (p.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
+                        || p.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.PROJECTILE);
+                // If the death was caused directly by a projectile from a custom item,
+                if(lastHitProjectile.contains(p.getUniqueId()) && lastHitWeapon.get(p.getUniqueId()).getPersistentDataContainer().has(Keys.CUSTOM_ITEM) && directHit) {
+                    // Override the death message and prevent the custom item from displaying
+                    event.deathMessage(Component.text()
+                            .append(Component.text(p.getName()))
+                            .append(Component.text(" was shot by "))
+                            .append(Component.text(p.getKiller().getName()))
+                            .build());
+                } else if (directHit) /* If it was a melee kill,*/ {
+                    ItemStack weapon = lastHitWeapon.get(p.getUniqueId());
+                    // Override with custom message for primed pick and default for other custom items
+                    if (weapon.getPersistentDataContainer().has(Keys.PRIMED_PICK)) {
+                        event.deathMessage(Component.text()
+                                .append(Component.text(p.getName()))
+                                .append(Component.text(" was smelted by "))
+                                .append(Component.text(p.getKiller().getName()))
+                                .build());
+                    } else if (weapon.getPersistentDataContainer().has(Keys.CUSTOM_ITEM)) {
+                        event.deathMessage(Component.text()
+                                .append(Component.text(p.getName()))
+                                .append(Component.text(" was slain by "))
+                                .append(Component.text(p.getKiller().getName()))
+                                .build());
+                    }
+                }
             }
             for (ItemStack item : p.getInventory().getContents()) {
                 if (item != null && item.getItemMeta().getPersistentDataContainer().has(Keys.HUNTER_COMPASS, PersistentDataType.BOOLEAN))
@@ -68,6 +102,30 @@ public class EntityListener implements Listener {
                 if (!aliveRunner) {
                     GameEnd("Hunters win!", NamedTextColor.RED);
                 }
+            }
+            // Detecting if the explosion was caused by a bed-- not the cleanest way, but I can't find any better methods
+            if (event.getDamageSource().getDamageType().equals(DamageType.EXPLOSION) && (event.getDamageSource().getCausingEntity() == null))
+                event.deathMessage(Component.text()
+                        .append(Component.text(p.getName()))
+                        .append(Component.text(" was killed by [Intentional Game Design]"))
+                        .build());
+        }
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+        if (e.getEntity() instanceof Player hit) {
+
+            //If player is hit by a non-projectile
+            if (e.getDamager() instanceof Player dmgr) {
+                lastHitWeapon.put(hit.getUniqueId(), (dmgr.getInventory().getItemInMainHand()));
+                lastHitProjectile.remove(hit.getUniqueId());
+            }
+
+            // If player is hit by a projectile
+            if (e.getDamager() instanceof Projectile proj && proj.getShooter() instanceof Player dmgr) {
+                lastHitWeapon.put(hit.getUniqueId(), (dmgr.getInventory().getItemInMainHand()));
+                lastHitProjectile.add(hit.getUniqueId());
             }
         }
     }
@@ -155,10 +213,21 @@ public class EntityListener implements Listener {
                 }
             }
         }
-        /// NERFED BED BOMBING ///
-        if (event.getClickedBlock().getBlockData() instanceof Bed) {
+        /// NERF BED BOMBING ///
+        if (event.getAction().isRightClick() && event.getClickedBlock() != null && event.getClickedBlock().getBlockData() instanceof Bed && ((p.getWorld().getEnvironment() == World.Environment.NETHER) || (p.getWorld().getEnvironment() == World.Environment.THE_END))) {
             event.setCancelled(true);
-            event.getClickedBlock().getWorld().createExplosion(event.getClickedBlock().getLocation(), 4, true, true);
+            Block bed = event.getClickedBlock();
+            bed.setType(Material.AIR);
+            // Register the explosion location to check for later
+            explosionLoc = event.getClickedBlock().getLocation();
+            bed.getWorld().createExplosion(explosionLoc, 3, true, true, null);
+        }
+    }
+
+    @EventHandler
+    public void onBedExplosion(EntityExplodeEvent event) {
+        if ((explosionLoc != null) && (event.getLocation().equals(explosionLoc))) {
+            event.setYield(1f/3f);
         }
     }
 
