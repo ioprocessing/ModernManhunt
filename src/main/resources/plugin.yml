@@ -1,0 +1,17 @@
+name: ModernManhunt
+version: '1.0-SNAPSHOT'
+main: me.Ford.modernManhunt.ModernManhunt
+api-version: '1.21'
+commands:
+  recipes:
+    description: "Displays the custom recipes GUI for ModernManhunt"
+    usage: "§cThis command does not accept arguments"
+    aliases: []
+    permission: modernmanhunt.command.recipes
+    permission-message: "§cYou do not have permission to use this command"
+  manhunt:
+    description: "Parent command for modifying teams and starting/ending manhunt"
+    usage: "§cIncorrect argument for command"
+    aliases: [ mm ]
+    permission: modernmanhunt.command.manhunt
+    permission-message: "§cYou do not have permission to use this command"

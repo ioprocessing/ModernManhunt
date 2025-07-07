@@ -1,0 +1,72 @@
+package me.Ford.modernManhunt;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+
+import java.util.List;
+
+public class GUIListener implements Listener {
+    @EventHandler
+    public void onClick(InventoryClickEvent e) {
+        Player p = (Player) e.getWhoClicked();
+
+        if (p.hasMetadata("OpenedRecipesMenu")) {
+            List<MetadataValue> metadata = p.getMetadata("OpenedRecipesMenu");
+            if (!metadata.isEmpty() && metadata.getFirst().asString().equals("Recipes Menu")) {
+                e.setCancelled(true);
+
+                switch (e.getSlot()) {
+                    case 0 -> {
+                        p.openInventory(RecipeGUI.PrimedPickaxeRecipe(p));
+                        p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Primed Pickaxe Recipe"));
+                    }
+                    case 1 -> {
+                        p.openInventory(RecipeGUI.StrengthenedSwordRecipe(p));
+                        p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Strengthened Sword Recipe"));
+                    }
+                    case 2 -> {
+                        p.openInventory(RecipeGUI.BolsteredBowRecipe(p));
+                        p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Bolstered Bow Recipe"));
+                    }
+                    case 3 -> {
+                        p.openInventory(RecipeGUI.TridentRecipe(p));
+                        p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Trident Recipe"));
+                    }
+                    case 4 -> {
+                        p.openInventory(RecipeGUI.CompactAnvilRecipe(p));
+                        p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Compact Anvil Recipe"));
+                    }
+                    case 5 -> {
+                        p.openInventory(RecipeGUI.BundledArrowsRecipe(p));
+                        p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Bundle of Arrows Recipe"));
+                    }
+                    case 6 -> {
+                        p.openInventory(RecipeGUI.GoldenHeadRecipe(p));
+                        p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Golden Head Recipe"));
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onClose(InventoryCloseEvent e) {
+        Player p = (Player) e.getPlayer();
+
+        if (p.getMetadata("OpenedRecipesMenu").isEmpty()) return;
+
+        if (p.getMetadata("OpenedRecipesMenu").getFirst().asString().equals("Recipes Menu")) {
+            p.removeMetadata("OpenedRecipesMenu", ModernManhunt.getInstance());
+        } else {
+            Bukkit.getScheduler().runTask(ModernManhunt.getInstance(), () -> {
+                MMFunctions.OpenRecipesMenu(p);
+            });
+        }
+    }
+}
