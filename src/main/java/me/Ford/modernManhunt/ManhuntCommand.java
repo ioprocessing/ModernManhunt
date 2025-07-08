@@ -8,6 +8,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,13 +21,17 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
@@ -194,6 +200,100 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
             case "stop" -> {
                 for (Player runner : runnerArray) {runner.removeMetadata("BeingHunted",  ModernManhunt.getInstance());}
             }
+
+            ///  WORLD ARGS ///
+
+            case "world" -> {
+                if (
+                        ((args.length == 1) || ((args.length == 2) && !(args[1].equalsIgnoreCase("list"))))
+                )
+                    return false;
+                switch (args[1].toLowerCase()) {
+                    case "create" -> {
+                        if (!StringUtils.isAlphanumeric(args[2]))
+                            return false;
+                        Long randomSeed = new ArrayList<>(Seeds.seedSet)
+                                .get(new Random().nextInt(Seeds.seedSet.size()));
+
+                        // OVERWORLD
+
+                        WorldCreator wcOverworld = new WorldCreator(args[2]);
+                        wcOverworld.environment(World.Environment.NORMAL);
+                        wcOverworld.seed(randomSeed);
+
+                        // NETHER
+
+                        WorldCreator wcNether = new WorldCreator(args[2] + "_nether");
+                        wcNether.environment(World.Environment.NETHER);
+                        wcNether.seed(randomSeed);
+
+                        // THE END
+
+                        WorldCreator wcTheEnd = new WorldCreator(args[2] + "_the_end");
+                        wcTheEnd.environment(World.Environment.THE_END);
+                        wcTheEnd.seed(randomSeed);
+
+                        World newOverworld = wcOverworld.createWorld();
+                        World newNether = wcNether.createWorld();
+                        World newTheEnd = wcTheEnd.createWorld();
+                        s.sendRawMessage("§aWorld " + args[2] + " successfully created!");
+                    }
+
+                    case "delete" -> {
+                        if (!StringUtils.isAlphanumeric(args[2]))
+                            return false;
+                        ArrayList<String> worlds = new ArrayList<>();
+                        for (World world : Bukkit.getWorlds()) {
+                            worlds.add(world.getName());
+                        }
+                        if (worlds.contains(args[2].toLowerCase())) {
+                            ArrayList<World> delWorlds = new ArrayList<>();
+                            delWorlds.add(Bukkit.getWorld(args[2].toLowerCase()));
+                            delWorlds.add(Bukkit.getWorld(args[2].toLowerCase() + "_nether"));
+                            delWorlds.add(Bukkit.getWorld(args[2].toLowerCase() + "_the_end"));
+                            for (World world : delWorlds) {
+                                if (!world.getPlayers().isEmpty()) {
+                                    List<World> safeWorlds = Bukkit.getWorlds();
+                                    for (World unsafeWorld : delWorlds) {
+                                        safeWorlds.remove(unsafeWorld);
+                                    }
+                                    for (Player p : world.getPlayers()) {
+                                        p.teleport(safeWorlds.getFirst().getSpawnLocation());
+                                    }
+                                }
+                                Bukkit.unloadWorld(world, false);
+                                try {
+                                    FileUtils.deleteDirectory(world.getWorldFolder());
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                            s.sendRawMessage("§aWorld " + args[2] + " successfully deleted!");
+                        } else return false;
+                    }
+
+                    case "list" -> {
+                        ArrayList<String> worlds = new ArrayList<>();
+                        for (World world : Bukkit.getWorlds()) {
+                            if (world.getEnvironment() == World.Environment.NORMAL)
+                                worlds.add(world.getName());
+                        }
+                        String worldList = String.join(", ", worlds);
+                        s.sendRawMessage("§aWorlds: " + worldList);
+                    }
+
+                    case "tp" -> {
+                        ArrayList<String> worlds = new ArrayList<>();
+                        for (World world : Bukkit.getWorlds()) {
+                            worlds.add(world.getName());
+                        }
+                        if (worlds.contains(args[2].toLowerCase())) {
+                            s.teleport(Bukkit.getWorld(args[2].toLowerCase()).getSpawnLocation());
+                        } else return false;
+                    }
+                }
+            }
+
             default -> {
                 return false;
             }
@@ -206,11 +306,14 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
         switch (args.length) {
             case 1 -> {
-                return Arrays.asList("runner", "hunter", "stop", "start");
+                return Arrays.asList("runner", "hunter", "stop", "start", "world");
             }
             case 2 -> {
                 if (args[0].equalsIgnoreCase("runner") ||  args[0].equalsIgnoreCase("hunter")) {
                     return Arrays.asList("list", "add", "remove");
+                }
+                else if (args[0].equalsIgnoreCase("world")) {
+                    return Arrays.asList("list", "create", "delete", "tp");
                 }
                 else return new ArrayList<>();
             }
@@ -218,6 +321,19 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                 if ((args[0].equalsIgnoreCase("runner") ||  args[0].equalsIgnoreCase("hunter"))
                         && (args[1].equalsIgnoreCase("add") ||  args[1].equalsIgnoreCase("remove"))) {
                     return null;
+                } else if ((args[0].equalsIgnoreCase("world"))
+                        && args[1].equalsIgnoreCase("tp")) {
+                    ArrayList<String> worlds = new ArrayList<>();
+                    for (World world : Bukkit.getWorlds()) {worlds.add(world.getName());}
+                    return worlds;
+                } else if ((args[0].equalsIgnoreCase("world"))
+                        && args[1].equalsIgnoreCase("delete")) {
+                    ArrayList<String> worlds = new ArrayList<>();
+                    for (World world : Bukkit.getWorlds()) {
+                        if (world.getEnvironment() == World.Environment.NORMAL)
+                            worlds.add(world.getName());
+                    }
+                    return worlds;
                 }
             }
         }
