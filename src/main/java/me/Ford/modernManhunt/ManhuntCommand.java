@@ -210,7 +210,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     return false;
                 switch (args[1].toLowerCase()) {
                     case "create" -> {
-                        if (!StringUtils.isAlphanumeric(args[2]))
+                        if (!StringUtils.isAlphanumeric(args[2]) || !(Bukkit.getWorld(args[2]) == null))
                             return false;
                         Long randomSeed = new ArrayList<>(Seeds.seedSet)
                                 .get(new Random().nextInt(Seeds.seedSet.size()));
