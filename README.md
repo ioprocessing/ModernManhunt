@@ -1,5 +1,5 @@
-To-do: 
-- Properly nerf bed-bombing
-- World generation and selection system
+To-do:
 - Add configurable options for recipes, consumable head effects, nether:overworld travel ratio, piglin bartering, bed bombing, etc.
+- Add proper spectator mode for multiple runners
+- Kill Noah
   

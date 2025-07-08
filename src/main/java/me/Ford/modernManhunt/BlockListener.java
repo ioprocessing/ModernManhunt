@@ -21,7 +21,7 @@ public class BlockListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Block b = event.getBlock();
         ItemStack handItem = event.getPlayer().getInventory().getItemInMainHand();
-        if (handItem.getItemMeta().getPersistentDataContainer().has(Keys.PRIMED_PICK) && Collections.SMELT.containsKey(b.getType())) {
+        if (handItem.getItemMeta() != null && handItem.getItemMeta().getPersistentDataContainer().has(Keys.PRIMED_PICK) && Collections.SMELT.containsKey(b.getType())) {
 
             // Set the drop to the corresponding smelt map item then cancel the original drop
             ItemStack drop = new ItemStack(Collections.SMELT.get(b.getType()));
