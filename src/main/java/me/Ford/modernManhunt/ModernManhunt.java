@@ -1,6 +1,8 @@
 package me.Ford.modernManhunt;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
@@ -57,6 +59,13 @@ public final class ModernManhunt extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PortalListener(), this);
         Objects.requireNonNull(getCommand("recipes")).setExecutor(new RecipesCommand());
         Objects.requireNonNull(getCommand("manhunt")).setExecutor(new ManhuntCommand());
+        Worlds.getInstance().load();
+        for (String worldName : Worlds.worldsList) {
+            World.Environment env = World.Environment.NORMAL;
+            if (worldName.endsWith("_nether")) {env = World.Environment.NETHER;}
+            if (worldName.endsWith("_the_end")) {env = World.Environment.THE_END;}
+            Bukkit.createWorld(new WorldCreator(worldName).environment(env));
+        }
     }
 
     @Override

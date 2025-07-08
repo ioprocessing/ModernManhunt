@@ -291,7 +291,4 @@ public class MMFunctions {
         hunterCompass.setItemMeta(meta);
         return hunterCompass;
     }
-
-
-
     }

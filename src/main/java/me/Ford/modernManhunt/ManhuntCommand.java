@@ -212,8 +212,8 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     case "create" -> {
                         if ( !(Bukkit.getWorld(args[2]) == null) || !StringUtils.isAlphanumeric(args[2]))
                             return false;
-                        Long randomSeed = new ArrayList<>(Seeds.seedSet)
-                                .get(new Random().nextInt(Seeds.seedSet.size()));
+                        Long randomSeed = new ArrayList<>(Resources.seedSet)
+                                .get(new Random().nextInt(Resources.seedSet.size()));
 
                         // OVERWORLD
 
@@ -236,6 +236,10 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         World newOverworld = wcOverworld.createWorld();
                         World newNether = wcNether.createWorld();
                         World newTheEnd = wcTheEnd.createWorld();
+                        Worlds.getInstance().add(newOverworld.getName());
+                        Worlds.getInstance().add(newNether.getName());
+                        Worlds.getInstance().add(newTheEnd.getName());
+
                         s.sendRawMessage("§aWorld " + args[2] + " successfully created!");
                     }
 
@@ -267,6 +271,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);
                                 }
+                                Worlds.getInstance().remove(world.getName());
                             }
                             s.sendRawMessage("§aWorld " + args[2] + " successfully deleted!");
                         } else return false;

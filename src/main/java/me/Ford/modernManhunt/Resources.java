@@ -7,10 +7,10 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Seeds {
+public class Resources {
     public static final Set<Long> seedSet = new HashSet<>();
     static {
-        InputStream stream = Seeds.class.getResourceAsStream("/seeds.txt");
+        InputStream stream = Resources.class.getResourceAsStream("/seeds.txt");
 
         if (stream == null) {
             System.err.println("Failed to load seeds.txt from resources.");
