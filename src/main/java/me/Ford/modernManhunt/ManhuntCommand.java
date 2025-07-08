@@ -164,6 +164,11 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         Title title = Title.title(mainTitle, Component.empty(), times);
                         p.showTitle(title);
 
+                        // If the player's current respawn location isn't in the world the hunt starts in,
+                        // set it to the default spawn location in that world
+                        if (p.getRespawnLocation().getWorld() != p.getLocation().getWorld())
+                            p.setRespawnLocation(p.getWorld().getSpawnLocation());
+
                         // And give them a compass
                         ItemStack compass = MMFunctions.HunterCompass(p);
 
@@ -186,6 +191,9 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         Component runSubtitle = Component.text("Punch a hunter or start running to begin", NamedTextColor.GREEN);
                         Title title = Title.title(mainTitle, runSubtitle, times);
                         p.showTitle(title);
+
+                        if (p.getRespawnLocation().getWorld() != p.getLocation().getWorld())
+                            p.setRespawnLocation(p.getWorld().getSpawnLocation());
                     }
                     for (Player p : s.getWorld().getPlayers()) {
                         p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.1f, 0.5f);
