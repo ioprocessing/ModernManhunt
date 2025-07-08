@@ -210,7 +210,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     return false;
                 switch (args[1].toLowerCase()) {
                     case "create" -> {
-                        if (!StringUtils.isAlphanumeric(args[2]) || !(Bukkit.getWorld(args[2]) == null))
+                        if ( !(Bukkit.getWorld(args[2]) == null) || !StringUtils.isAlphanumeric(args[2]))
                             return false;
                         Long randomSeed = new ArrayList<>(Seeds.seedSet)
                                 .get(new Random().nextInt(Seeds.seedSet.size()));
@@ -246,11 +246,11 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         for (World world : Bukkit.getWorlds()) {
                             worlds.add(world.getName());
                         }
-                        if (worlds.contains(args[2].toLowerCase())) {
+                        if (worlds.contains(args[2])) {
                             ArrayList<World> delWorlds = new ArrayList<>();
-                            delWorlds.add(Bukkit.getWorld(args[2].toLowerCase()));
-                            delWorlds.add(Bukkit.getWorld(args[2].toLowerCase() + "_nether"));
-                            delWorlds.add(Bukkit.getWorld(args[2].toLowerCase() + "_the_end"));
+                            delWorlds.add(Bukkit.getWorld(args[2]));
+                            delWorlds.add(Bukkit.getWorld(args[2] + "_nether"));
+                            delWorlds.add(Bukkit.getWorld(args[2] + "_the_end"));
                             for (World world : delWorlds) {
                                 if (!world.getPlayers().isEmpty()) {
                                     List<World> safeWorlds = Bukkit.getWorlds();
@@ -287,8 +287,8 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         for (World world : Bukkit.getWorlds()) {
                             worlds.add(world.getName());
                         }
-                        if (worlds.contains(args[2].toLowerCase())) {
-                            s.teleport(Bukkit.getWorld(args[2].toLowerCase()).getSpawnLocation());
+                        if (worlds.contains(args[2])) {
+                            s.teleport(Bukkit.getWorld(args[2]).getSpawnLocation());
                         } else return false;
                     }
                 }
