@@ -6,10 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -301,11 +298,26 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                             worlds.add(world.getName());
                         }
                         if (worlds.contains(args[2])) {
-                            s.teleport(Bukkit.getWorld(args[2]).getSpawnLocation());
+                            if (args[2].endsWith("_the_end")) {
+                                s.teleport(new Location(Bukkit.getWorld(args[2]), 100.5, 49, 0.5, 90.0f, s.getPitch()));
+                                MMFunctions.GenerateEndPlatform(Bukkit.getWorld(args[2]));
+                            } else s.teleport(Bukkit.getWorld(args[2]).getSpawnLocation());
                         } else return false;
                     }
                 }
             }
+
+            /// HELP ARGS ///
+
+            case "help" ->
+                s.sendMessage(Component.text("§6> §a/recipes" +
+                        "\n§6> §a/mm [runner/hunter] [add/remove] <player name>" +
+                        "\n§6> §a/mm [runner/hunter] list" +
+                        "\n§6> §a/mm world [create/delete/tp] <world name>" +
+                        "\n§6> §a/mm world list" +
+                        "\n§6> §a/mm start" +
+                        "\n§6> §a/mm stop" +
+                        "\n§6> §a/mm help"));
 
             default -> {
                 return false;
@@ -319,7 +331,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
         switch (args.length) {
             case 1 -> {
-                return Arrays.asList("runner", "hunter", "stop", "start", "world");
+                return Arrays.asList("runner", "hunter", "stop", "start", "world", "help");
             }
             case 2 -> {
                 if (args[0].equalsIgnoreCase("runner") ||  args[0].equalsIgnoreCase("hunter")) {

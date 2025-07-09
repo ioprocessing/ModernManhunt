@@ -15,3 +15,10 @@ commands:
     aliases: [ mm ]
     permission: modernmanhunt.command.manhunt
     permission-message: "§cYou do not have permission to use this command"
+permissions:
+  modernmanhunt.command.recipes:
+    description: "Permission for the /recipes command"
+    default: true
+  modernmanhunt.command.manhunt:
+    description: "Permission for the /manhunt command"
+    default: op

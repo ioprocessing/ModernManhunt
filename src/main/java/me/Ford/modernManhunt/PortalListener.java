@@ -38,16 +38,24 @@ public class PortalListener implements Listener {
                 // If we go to the End from the Overworld:
                 toWorld = Bukkit.getWorld(fromWorld.getName() + "_the_end"); // The End name
                 if (toWorld == null) return;
+
+                // Generate end platform
+                MMFunctions.GenerateEndPlatform(toWorld);
+
                 // Always send them to the obsidian platform
                 to = new Location(toWorld, 100.5, 49, 0.5, 90.0f, event.getPlayer().getPitch());
+
             }
         } else if (fromWorld.getEnvironment() == World.Environment.THE_END && event.getTo().getWorld().getEnvironment() == World.Environment.NORMAL){
             // If we go to the Overworld from the End:
             String name = fromWorld.getName();
             toWorld = Bukkit.getWorld(name.substring(0, name.length() - 7));
             if (toWorld == null) return;
+
             // Always send them to their respawn location
             to = event.getPlayer().getRespawnLocation();
+
+            // Regenerate the end platform
         } else return;
 
         // Set the destination manually

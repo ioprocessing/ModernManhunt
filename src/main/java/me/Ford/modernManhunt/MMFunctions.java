@@ -6,6 +6,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -291,4 +293,26 @@ public class MMFunctions {
         hunterCompass.setItemMeta(meta);
         return hunterCompass;
     }
+
+    public static void GenerateEndPlatform(World world) {
+        // Clear area for obsidian platform
+        for (int x = 0; x < 5; x++) {
+            for (int z = 0; z < 5; z++) {
+                Block block = world.getBlockAt(x + 98, 48, z - 2);
+                if (block.getType() == Material.OBSIDIAN) continue;
+                block.breakNaturally(false, true);
+                block.setType(Material.OBSIDIAN);
+            }
+        }
+
+        // Clear area for player
+        for (int x = 0; x < 5; x++) {
+            for (int z = 0; z < 5; z++) {
+                for (int y = 0; y < 3; y++) {
+                    world.getBlockAt(x + 98, 49 + y, z - 2).breakNaturally(false, true);
+                }
+            }
+        }
+    }
+
     }
