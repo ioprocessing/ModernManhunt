@@ -154,6 +154,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         Player p = Bukkit.getPlayer(name);
                         // Make them healthy + clear their inventory
                         p.getInventory().clear();
+                        p.setExperienceLevelAndProgress(0);
                         p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
                         p.setFoodLevel(20);
                         p.setSaturation(20.0f);
@@ -168,19 +169,17 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
                         // And give them a compass
                         ItemStack compass = MMFunctions.HunterCompass(p);
-
-                        Bukkit.getScheduler().runTask(ModernManhunt.getInstance(), () -> {
-                            LodestoneTracker loc = LodestoneTracker.lodestoneTracker(ManhuntCommand.runnerArray.getFirst().getLocation(), false);
-                            compass.setData(DataComponentTypes.LODESTONE_TRACKER, loc);
-                            p.give(compass);
-                        });
-
+                        LodestoneTracker loc = LodestoneTracker.lodestoneTracker(ManhuntCommand.runnerArray.getFirst().getLocation(), false);
+                        compass.setData(DataComponentTypes.LODESTONE_TRACKER, loc);
+                        p.getInventory().setItem(8, compass);
+                        p.updateInventory();
                     }
                     // For each runner,
                     for (String name : mmRunners.getEntries()) {
                         // Make them healthy and mark that they're being hunted
                         Player p = Bukkit.getPlayer(name);
                         p.getInventory().clear();
+                        p.setExperienceLevelAndProgress(0);
                         p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
                         p.setFoodLevel(20);
                         p.setSaturation(20.0f);

@@ -57,8 +57,9 @@ public class EntityListener implements Listener {
         {
             Player p = event.getEntity();
             if (p.getKiller() != null) {
-                ItemStack playerHead = MMFunctions.ConsumablePlayerHead(p);
-                event.getDrops().add(playerHead);
+                // If a hunter kills a hunter, prevent a head from dropping
+                if (!(ManhuntCommand.mmHunters.getEntries().contains(p.getKiller().getName()) && ManhuntCommand.mmHunters.getEntries().contains(p.getName())))
+                    event.getDrops().add(MMFunctions.ConsumablePlayerHead(p));
                 boolean directHit = (p.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
                         || p.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.PROJECTILE);
                 // If the death was caused directly by a projectile from a custom item,
@@ -242,15 +243,19 @@ public class EntityListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player p =  event.getPlayer();
-        if (ManhuntCommand.mmHunters.getEntries().contains(event.getPlayer().getName())) {
+        boolean aliveRunner = false;
+        // If any of the players marked as runners are alive, give the compass (hunt is still on)
+        for (Player runner : ManhuntCommand.runnerArray) {
+            if (runner.hasMetadata("BeingHunted"))
+                aliveRunner = true;
+        }
+        if (ManhuntCommand.mmHunters.getEntries().contains(event.getPlayer().getName()) && aliveRunner) {
             List<MetadataValue> metadata = p.getMetadata("TargetedPlayer");
             int index = metadata.getFirst().asInt();
             ItemStack compass = MMFunctions.HunterCompass(p);
-            Bukkit.getScheduler().runTask(ModernManhunt.getInstance(), () -> {
-                LodestoneTracker loc = LodestoneTracker.lodestoneTracker(ManhuntCommand.runnerArray.get(index).getLocation(), false);
-                compass.setData(DataComponentTypes.LODESTONE_TRACKER, loc);
-                event.getPlayer().give(compass);
-            });
+            LodestoneTracker loc = LodestoneTracker.lodestoneTracker(ManhuntCommand.runnerArray.get(index).getLocation(), false);
+            compass.setData(DataComponentTypes.LODESTONE_TRACKER, loc);
+            p.getInventory().setItem(8, compass);
         }
     }
 
