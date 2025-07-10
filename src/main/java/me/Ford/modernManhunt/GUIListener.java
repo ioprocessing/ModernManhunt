@@ -1,11 +1,13 @@
 package me.Ford.modernManhunt;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
@@ -52,13 +54,21 @@ public class GUIListener implements Listener {
                     }
                 }
             }
+        } else if (p.hasMetadata("OpenedSpectatorMenu")) {
+            e.setCancelled(true);
+        if (e.getCurrentItem() == null || !e.getCurrentItem().getType().equals(Material.PLAYER_HEAD))
+                return;
+            SkullMeta meta = (SkullMeta) e.getCurrentItem().getItemMeta();
+            p.teleport(meta.getOwningPlayer().getLocation());
+            p.closeInventory();
         }
     }
 
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         Player p = (Player) e.getPlayer();
-
+        if (p.hasMetadata("OpenedSpectatorMenu"))
+            p.removeMetadata("OpenedSpectatorMenu", ModernManhunt.getInstance());
         if (p.getMetadata("OpenedRecipesMenu").isEmpty()) return;
 
         if (p.getMetadata("OpenedRecipesMenu").getFirst().asString().equals("Recipes Menu")) {

@@ -77,7 +77,13 @@ public final class ModernManhunt extends JavaPlugin {
 
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.removeMetadata("OpenedRecipesMenu", this);
-            // Add player metadata keys as needed
+            p.removeMetadata("OpenedSpectatorMenu", this);
+            if (p.hasMetadata("DeadRunner")) {
+                MMFunctions.ExitSpectator(p);
+            }
+            p.removeMetadata("BeingHunted", this);
+            p.removeMetadata("TargetedPlayer", this);
+            // ADD EVERY PLAYER METADATA CHANGE
         }
     }
 

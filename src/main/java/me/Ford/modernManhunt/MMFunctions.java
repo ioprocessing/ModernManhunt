@@ -5,6 +5,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -313,6 +314,78 @@ public class MMFunctions {
                 }
             }
         }
+    }
+
+    public static void EnterSpectator (Player p) {
+            p.setGameMode(GameMode.ADVENTURE);
+            p.setAllowFlight(true);
+            // Hide the spectator from all players
+            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                if (!onlinePlayer.hasMetadata("DeadRunner"))
+                    onlinePlayer.hidePlayer(ModernManhunt.getInstance(), p);
+            }
+        }
+
+    public static ItemStack SpectatorCompass() {
+
+        // Create compass ItemStack
+        ItemStack spectatorCompass = new ItemStack(Material.COMPASS);
+        CompassMeta meta = (CompassMeta) spectatorCompass.getItemMeta();
+
+        // Now give it the custom item properties
+        TextComponent compass_name = Component.text("Spectator's Compass",  NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false);
+        meta.lore(Arrays.asList(
+                Component.text()
+                        .append(Component.text("USE").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text( " to open a menu and choose").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                        .build(),
+                Component.text("the player you wish to spectate.").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
+
+        meta.customName(compass_name);
+
+        // Add custom tag that we'll check for later
+        meta.getPersistentDataContainer().set(Keys.SPECTATOR_COMPASS, PersistentDataType.BOOLEAN, true);
+        meta.getPersistentDataContainer().set(Keys.CUSTOM_ITEM, PersistentDataType.BOOLEAN, true);
+
+        // Set the item meta
+        spectatorCompass.setItemMeta(meta);
+        return spectatorCompass;
+    }
+
+    public static ItemStack getSpecHead(Player p) {
+
+        // Create the player head
+        ItemStack specHead = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) specHead.getItemMeta();
+
+        // Name the head after the player and style it
+        TextComponent head_name = Component.text("");
+
+        if (ManhuntCommand.mmHunters.getEntries().contains(p.getName())) {
+            head_name = Component.text(p.getName(), NamedTextColor.RED).decoration(TextDecoration.ITALIC, false);
+            meta.lore(List.of(Component.text("Hunter").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true)));
+        } else {
+            head_name = Component.text(p.getName(), NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false);
+            meta.lore(List.of(Component.text("Runner").color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true)));
+        }
+
+        meta.customName(head_name);
+        meta.setOwningPlayer(p);
+
+        // Set the item meta and return it
+        specHead.setItemMeta(meta);
+        return specHead;
+    }
+
+    public static void ExitSpectator(Player p) {
+            for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
+                onlinePlayers.showPlayer(ModernManhunt.getInstance(), p);
+            }
+            p.setGameMode(GameMode.SURVIVAL);
+            p.clearActivePotionEffects();
+            p.removeMetadata("DeadRunner", ModernManhunt.getInstance());
+            p.setAllowFlight(false);
+            p.getInventory().clear();
     }
 
     }

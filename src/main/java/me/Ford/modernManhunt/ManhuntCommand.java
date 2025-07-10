@@ -202,7 +202,13 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
             ///  STOP ARGS ///
 
             case "stop" -> {
-                for (Player runner : runnerArray) {runner.removeMetadata("BeingHunted",  ModernManhunt.getInstance());}
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    p.removeMetadata("BeingHunted",  ModernManhunt.getInstance());
+                    if (p.hasMetadata("DeadRunner")) {
+                        MMFunctions.ExitSpectator(p);
+                    }
+                }
+                s.sendMessage("§cEnded the current manhunt and cleared all tags");
             }
 
             ///  WORLD ARGS ///

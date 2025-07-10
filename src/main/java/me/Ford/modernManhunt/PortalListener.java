@@ -6,6 +6,7 @@ import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class PortalListener implements Listener {
     @EventHandler
@@ -61,6 +62,14 @@ public class PortalListener implements Listener {
         // Set the destination manually
         if (to != null) {
             event.setTo(to);
+        }
+    }
+
+    @EventHandler
+    public void onDimensionChange(PlayerTeleportEvent e) {
+        if(!e.getFrom().getWorld().equals(e.getTo().getWorld()) && e.getPlayer().hasMetadata("DeadRunner")) {
+            // Fails without tick delay on compass teleport to another dimension
+            Bukkit.getScheduler().runTaskLater(ModernManhunt.getInstance(), () -> e.getPlayer().setAllowFlight(true), 1L);
         }
     }
 }

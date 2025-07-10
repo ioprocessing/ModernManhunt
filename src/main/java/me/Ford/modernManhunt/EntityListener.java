@@ -19,12 +19,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.time.Duration;
@@ -49,6 +53,7 @@ public class EntityListener implements Listener {
         for (Player participant : ManhuntCommand.participantArray) {
             participant.showTitle(title);
             participant.playSound(participant.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.3f, 1f);
+            participant.removeMetadata("DeadRunner", ModernManhunt.getInstance());
         }
     }
 
@@ -95,6 +100,7 @@ public class EntityListener implements Listener {
             if (p.hasMetadata("BeingHunted")) {
                 boolean aliveRunner = false;
                 p.removeMetadata("BeingHunted", ModernManhunt.getInstance());
+                p.setMetadata("DeadRunner", new FixedMetadataValue(ModernManhunt.getInstance(), true));
                 // If any of the players marked as runners are alive, don't end the game
                 for (Player runner : ManhuntCommand.runnerArray) {
                     if (runner.hasMetadata("BeingHunted"))
@@ -102,6 +108,11 @@ public class EntityListener implements Listener {
                 }
                 if (!aliveRunner) {
                     GameEnd("Hunters win!", NamedTextColor.RED);
+                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                        if (onlinePlayer.hasMetadata("DeadRunner")) {
+                            MMFunctions.ExitSpectator(onlinePlayer);
+                        }
+                    }
                 }
             }
             // Detecting if the explosion was caused by a bed-- not the cleanest way, but I can't find any better methods
@@ -115,6 +126,8 @@ public class EntityListener implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+        if (e.getDamager().hasMetadata("DeadRunner"))
+            e.setCancelled(true);
         if (e.getEntity() instanceof Player hit) {
 
             //If player is hit by a non-projectile
@@ -135,6 +148,11 @@ public class EntityListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player p = event.getPlayer();
         // If the player right clicks with an item,
+        if (p.hasMetadata("DeadRunner")) {
+            if (event.getItem() == null || !event.getItem().getItemMeta().getPersistentDataContainer().has(Keys.SPECTATOR_COMPASS))
+                event.setCancelled(true);
+            else SpectatorGUI.Open(p);
+        }
         if (event.getItem() != null) {
             // Check if the item being clicked with has the 'CONSUMABLE_HEAD' key
             ItemMeta handItem = event.getItem().getItemMeta();
@@ -234,15 +252,24 @@ public class EntityListener implements Listener {
 
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent event) {
-        ItemStack item = event.getItemDrop().getItemStack();
+        PersistentDataContainer item = event.getItemDrop().getItemStack().getItemMeta().getPersistentDataContainer();
         // Check what item is being dropped
-        if (item.getItemMeta().getPersistentDataContainer().has(Keys.HUNTER_COMPASS, PersistentDataType.BOOLEAN))
+        if (item.has(Keys.HUNTER_COMPASS, PersistentDataType.BOOLEAN) || item.has(Keys.SPECTATOR_COMPASS, PersistentDataType.BOOLEAN))
             event.setCancelled(true);
     }
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player p =  event.getPlayer();
+        if (p.hasMetadata("DeadRunner")) {
+            MMFunctions.EnterSpectator(p);
+            Bukkit.getScheduler().runTaskLater(ModernManhunt.getInstance(), () -> {
+                p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, PotionEffect.INFINITE_DURATION, 0, false, false, false));
+                p.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, PotionEffect.INFINITE_DURATION, 0, false, false, false));
+            }, 1L);
+            p.give(MMFunctions.SpectatorCompass());
+        }
+
         boolean aliveRunner = false;
         // If any of the players marked as runners are alive, give the compass (hunt is still on)
         for (Player runner : ManhuntCommand.runnerArray) {
@@ -284,5 +311,32 @@ public class EntityListener implements Listener {
         // Clear and replace with custom drops
         originalLoot.clear();
         originalLoot.add(Bartering.getCustomDrop());
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        Player p = e.getPlayer();
+        // If the player is a spectator, re-apply vanish and flight
+        if (p.hasMetadata("DeadRunner")) {
+            MMFunctions.EnterSpectator(p);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDamage(EntityDamageEvent event) {
+        // Cancel all damage dealt to spectators
+        if (!(event.getEntity() instanceof Player))
+            return;
+        if (event.getEntity().hasMetadata("DeadRunner"))
+            event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onItemPickup(EntityPickupItemEvent event) {
+        // Cancel all damage dealt to spectators
+        if (!(event.getEntity() instanceof Player))
+            return;
+        if (event.getEntity().hasMetadata("DeadRunner"))
+            event.setCancelled(true);
     }
 }
