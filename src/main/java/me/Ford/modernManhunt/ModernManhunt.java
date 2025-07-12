@@ -60,8 +60,8 @@ public final class ModernManhunt extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RespawnListener(), this);
         Objects.requireNonNull(getCommand("recipes")).setExecutor(new RecipesCommand());
         Objects.requireNonNull(getCommand("manhunt")).setExecutor(new ManhuntCommand());
-        Worlds.getInstance().load();
-        for (String worldName : Worlds.worldsList) {
+        Config.getInstance().load();
+        for (String worldName : Config.worldsList) {
             World.Environment env = World.Environment.NORMAL;
             if (worldName.endsWith("_nether")) {env = World.Environment.NETHER;}
             if (worldName.endsWith("_the_end")) {env = World.Environment.THE_END;}

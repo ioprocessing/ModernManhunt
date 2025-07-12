@@ -152,7 +152,10 @@ public class EntityListener implements Listener {
         if (p.hasMetadata("DeadRunner")) {
             if (event.getItem() == null || !event.getItem().getItemMeta().getPersistentDataContainer().has(Keys.SPECTATOR_COMPASS))
                 event.setCancelled(true);
-            else SpectatorGUI.Open(p);
+            else TeleporterGUI.openSpec(p);
+        } else if (event.getItem() != null && event.getItem().getItemMeta().getPersistentDataContainer().has(Keys.TP_STAR)) {
+            event.setCancelled(true);
+            TeleporterGUI.openTP(p);
         }
         if (event.getItem() != null) {
             // Check if the item being clicked with has the 'CONSUMABLE_HEAD' key
@@ -267,6 +270,8 @@ public class EntityListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player p =  event.getPlayer();
+        if (Config.handicapList.contains(p.getName()))
+            p.getInventory().setItem(7, MMFunctions.TPStar());
         if (p.hasMetadata("DeadRunner")) {
             MMFunctions.EnterSpectator(p);
             Bukkit.getScheduler().runTaskLater(ModernManhunt.getInstance(), () -> {

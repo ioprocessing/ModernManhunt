@@ -441,4 +441,30 @@ public class MMFunctions {
         p.setSaturation(20.0f);
     }
 
+    public static ItemStack TPStar() {
+
+        // Create compass ItemStack
+        ItemStack tpStar = new ItemStack(Material.NETHER_STAR);
+        ItemMeta meta = tpStar.getItemMeta();
+
+        // Now give it the custom item properties
+        TextComponent star_name = Component.text("Teleportation Star",  NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false);
+        meta.lore(Arrays.asList(
+                Component.text()
+                        .append(Component.text("USE").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text( " to open a menu and choose the").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                        .build(),
+                Component.text("hunter you wish to teleport to.").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
+
+        meta.customName(star_name);
+
+        // Add custom tag that we'll check for later
+        meta.getPersistentDataContainer().set(Keys.TP_STAR, PersistentDataType.BOOLEAN, true);
+        meta.getPersistentDataContainer().set(Keys.CUSTOM_ITEM, PersistentDataType.BOOLEAN, true);
+
+        // Set the item meta
+        tpStar.setItemMeta(meta);
+        return tpStar;
+    }
+
     }

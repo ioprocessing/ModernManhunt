@@ -54,7 +54,7 @@ public class GUIListener implements Listener {
                     }
                 }
             }
-        } else if (p.hasMetadata("OpenedSpectatorMenu")) {
+        } else if (p.hasMetadata("OpenedSpectatorMenu") || p.hasMetadata("OpenedTPMenu")) {
             e.setCancelled(true);
         if (e.getCurrentItem() == null || !e.getCurrentItem().getType().equals(Material.PLAYER_HEAD))
                 return;
@@ -69,6 +69,8 @@ public class GUIListener implements Listener {
         Player p = (Player) e.getPlayer();
         if (p.hasMetadata("OpenedSpectatorMenu"))
             p.removeMetadata("OpenedSpectatorMenu", ModernManhunt.getInstance());
+        if (p.hasMetadata("OpenedTPMenu"))
+            p.removeMetadata("OpenedTPMenu", ModernManhunt.getInstance());
         if (p.getMetadata("OpenedRecipesMenu").isEmpty()) return;
 
         if (p.getMetadata("OpenedRecipesMenu").getFirst().asString().equals("Recipes Menu")) {

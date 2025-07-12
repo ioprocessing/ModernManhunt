@@ -159,9 +159,12 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     Title.Times times = Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(3000), Duration.ofMillis(500));
                     // For each hunter,
                     for (String name : mmHunters.getEntries()) {
+                        // Make them healthy + clear their inventory
                         MMFunctions.resetPlayer(name);
                         Player p = Bukkit.getPlayer(name);
-                        // Make them healthy + clear their inventory
+                        // If the player is on the handicap list, give them the TP star
+                        if (Config.handicapList.contains(p.getName()))
+                            p.getInventory().setItem(7, MMFunctions.TPStar());
                         p.setMetadata("TargetedPlayer", new FixedMetadataValue(ModernManhunt.getInstance(), 0));
                         Title title = Title.title(mainTitle, Component.empty(), times);
                         p.showTitle(title);
@@ -246,9 +249,9 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         World newOverworld = wcOverworld.createWorld();
                         World newNether = wcNether.createWorld();
                         World newTheEnd = wcTheEnd.createWorld();
-                        Worlds.getInstance().add(newOverworld.getName());
-                        Worlds.getInstance().add(newNether.getName());
-                        Worlds.getInstance().add(newTheEnd.getName());
+                        Config.getInstance().add(newOverworld.getName(), "worlds");
+                        Config.getInstance().add(newNether.getName(), "worlds");
+                        Config.getInstance().add(newTheEnd.getName(), "worlds");
 
                         s.sendRawMessage("§aWorld " + args[2] + " successfully created!");
                     }
@@ -267,7 +270,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
-                            Worlds.getInstance().remove(currentWorld.getName());
+                            Config.getInstance().remove(currentWorld.getName(), "worlds");
                         }
                         s.sendRawMessage("§aWorld " + args[2] + " successfully deleted!");
                     }
@@ -322,6 +325,45 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         "\n§6> §a/mm stop" +
                         "\n§6> §a/mm help"));
 
+            ///  HANDICAP ARGS ///
+
+            case "handicap" -> {
+                if (
+                        ((args.length == 1) || ((args.length == 2) && !(args[1].equalsIgnoreCase("list"))))
+                                || ((args.length == 3) && (Bukkit.getPlayer(args[2].toLowerCase()) == null))
+                )
+                    return false;
+                switch (args[1].toLowerCase()) {
+                    case "add" -> {
+                        String p =  args[2];
+                        if (!(Config.handicapList.contains(p))) {
+                            Config.getInstance().add(p, "handicap");
+                            s.sendMessage("§aSuccessfully added that player to the handicap list!");
+                        }
+                        else s.sendMessage("§cThat player is already on the handicap list!");
+                    }
+                    case "remove" -> {
+                        String p =  args[2];
+                        if (mmHunters.getEntries().contains(p)) {
+                            Config.getInstance().remove(p, "handicap");
+                            s.sendMessage("§aSuccessfully removed that player from the handicap list!");
+                        }
+                        else s.sendMessage("§cThat player isn't on the handicap list!");
+                    }
+                    case "list" -> {
+                        if (Config.handicapList.isEmpty())
+                            s.sendRawMessage("§cThere are no players on the handicap list!");
+                        else {
+                            String playerList = String.join(", ", Config.handicapList);
+                            s.sendRawMessage("§aHandicapped players: " + playerList);
+                        }
+                    }
+                    default -> {
+                        return false;
+                    }
+                }
+            }
+
             default -> {
                 return false;
             }
@@ -334,10 +376,10 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
         switch (args.length) {
             case 1 -> {
-                return Arrays.asList("runner", "hunter", "stop", "start", "world", "help");
+                return Arrays.asList("runner", "hunter", "stop", "start", "world", "help", "handicap");
             }
             case 2 -> {
-                if (args[0].equalsIgnoreCase("runner") ||  args[0].equalsIgnoreCase("hunter")) {
+                if (args[0].equalsIgnoreCase("runner") ||  args[0].equalsIgnoreCase("hunter") || args[0].equalsIgnoreCase("handicap")) {
                     return Arrays.asList("list", "add", "remove");
                 }
                 else if (args[0].equalsIgnoreCase("world")) {
@@ -346,7 +388,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                 else return new ArrayList<>();
             }
             case 3 -> {
-                if ((args[0].equalsIgnoreCase("runner") ||  args[0].equalsIgnoreCase("hunter"))
+                if ((args[0].equalsIgnoreCase("runner") || args[0].equalsIgnoreCase("hunter") || args[0].equalsIgnoreCase("handicap"))
                         && (args[1].equalsIgnoreCase("add") ||  args[1].equalsIgnoreCase("remove"))) {
                     return null;
                 } else if ((args[0].equalsIgnoreCase("world"))

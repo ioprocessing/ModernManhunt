@@ -20,4 +20,5 @@ public class Keys {
     public static final NamespacedKey TRIDENT_RECIPE = new NamespacedKey (ModernManhunt.getInstance(), "TridentRecipe");
     public static final NamespacedKey HUNTER_COMPASS = new NamespacedKey (ModernManhunt.getInstance(), "HunterCompass");
     public static final NamespacedKey SPECTATOR_COMPASS = new NamespacedKey (ModernManhunt.getInstance(), "SpectatorCompass");
+    public static final NamespacedKey TP_STAR = new NamespacedKey (ModernManhunt.getInstance(), "SpectatorCompass");
 }
