@@ -256,37 +256,22 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     }
 
                     case "delete" -> {
-                        if (!StringUtils.isAlphanumeric(args[2]))
+                        ArrayList<World> selectedWorlds = MMFunctions.unloadWorlds(args[2]);
+                        if (selectedWorlds == null)
                             return false;
-                        ArrayList<String> worlds = new ArrayList<>();
-                        for (World world : Bukkit.getWorlds()) {
-                            worlds.add(world.getName());
-                        }
-                        if (worlds.contains(args[2])) {
-                            ArrayList<World> delWorlds = new ArrayList<>();
-                            delWorlds.add(Bukkit.getWorld(args[2]));
-                            delWorlds.add(Bukkit.getWorld(args[2] + "_nether"));
-                            delWorlds.add(Bukkit.getWorld(args[2] + "_the_end"));
-                            for (World world : delWorlds) {
-                                if (!world.getPlayers().isEmpty()) {
-                                    List<World> safeWorlds = Bukkit.getWorlds();
-                                    for (World unsafeWorld : delWorlds) {
-                                        safeWorlds.remove(unsafeWorld);
-                                    }
-                                    for (Player p : world.getPlayers()) {
-                                        p.teleport(safeWorlds.getFirst().getSpawnLocation());
-                                    }
-                                }
-                                Bukkit.unloadWorld(world, false);
-                                try {
-                                    FileUtils.deleteDirectory(world.getWorldFolder());
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                Worlds.getInstance().remove(world.getName());
+                        // For each world to unload,
+                        for (World currentWorld : selectedWorlds) {
+                            // Check for players and move them elsewhere
+                            MMFunctions.checkForPlayers(currentWorld, selectedWorlds);
+                            Bukkit.unloadWorld(currentWorld, false);
+                            try {
+                                FileUtils.deleteDirectory(currentWorld.getWorldFolder());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
                             }
-                            s.sendRawMessage("§aWorld " + args[2] + " successfully deleted!");
-                        } else return false;
+                            Worlds.getInstance().remove(currentWorld.getName());
+                        }
+                        s.sendRawMessage("§aWorld " + args[2] + " successfully deleted!");
                     }
 
                     case "list" -> {
@@ -310,6 +295,19 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                                 MMFunctions.GenerateEndPlatform(Bukkit.getWorld(args[2]));
                             } else s.teleport(Bukkit.getWorld(args[2]).getSpawnLocation());
                         } else return false;
+                    }
+
+                    case "unload" -> {
+                        ArrayList<World> selectedWorlds = MMFunctions.unloadWorlds(args[2]);
+                        if (selectedWorlds == null)
+                            return false;
+                        // For each world to unload,
+                        for (World currentWorld : selectedWorlds) {
+                            // Check for players and move them elsewhere
+                            MMFunctions.checkForPlayers(currentWorld, selectedWorlds);
+                            Bukkit.unloadWorld(currentWorld, false);
+                        }
+                        s.sendRawMessage("§aWorld " + args[2] + " successfully unloaded!");
                     }
                 }
             }
@@ -345,7 +343,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     return Arrays.asList("list", "add", "remove");
                 }
                 else if (args[0].equalsIgnoreCase("world")) {
-                    return Arrays.asList("list", "create", "delete", "tp");
+                    return Arrays.asList("list", "create", "delete", "tp", "unload");
                 }
                 else return new ArrayList<>();
             }
@@ -359,7 +357,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     for (World world : Bukkit.getWorlds()) {worlds.add(world.getName());}
                     return worlds;
                 } else if ((args[0].equalsIgnoreCase("world"))
-                        && args[1].equalsIgnoreCase("delete")) {
+                        && (args[1].equalsIgnoreCase("delete") ||  args[1].equalsIgnoreCase("unload"))) {
                     ArrayList<String> worlds = new ArrayList<>();
                     for (World world : Bukkit.getWorlds()) {
                         if (world.getEnvironment() == World.Environment.NORMAL)

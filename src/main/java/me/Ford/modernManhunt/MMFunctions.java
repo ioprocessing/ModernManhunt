@@ -21,7 +21,9 @@ import org.bukkit.inventory.meta.components.UseCooldownComponent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataType;
+import org.codehaus.plexus.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -386,6 +388,37 @@ public class MMFunctions {
             p.removeMetadata("DeadRunner", ModernManhunt.getInstance());
             p.setAllowFlight(false);
             p.getInventory().clear();
+    }
+
+    public static ArrayList<World> unloadWorlds(String worldName) {
+        if (!StringUtils.isAlphanumeric(worldName) || (worldName.endsWith("_nether") ||  worldName.endsWith("_the_end")))
+            return null;
+        ArrayList<String> worlds = new ArrayList<>();
+        for (World world : Bukkit.getWorlds()) {
+            worlds.add(world.getName());
+        }
+        if (worlds.contains(worldName)) {
+            ArrayList<World> selectWorlds = new ArrayList<>();
+            selectWorlds.add(Bukkit.getWorld(worldName));
+            selectWorlds.add(Bukkit.getWorld(worldName + "_nether"));
+            selectWorlds.add(Bukkit.getWorld(worldName + "_the_end"));
+            return selectWorlds;
+        } else return null;
+    }
+
+    public static void checkForPlayers(World world, ArrayList<World> selectedWorlds) {
+        if (!world.getPlayers().isEmpty()) {
+            // Get a list of all worlds
+            List<World> safeWorlds = Bukkit.getWorlds();
+            for (World unsafeWorld : selectedWorlds) {
+                // And remove the current set of worlds marked for deletion
+                safeWorlds.remove(unsafeWorld);
+            }
+            // Then teleport every player in the unempty world to a safe world
+            for (Player p : world.getPlayers()) {
+                p.teleport(safeWorlds.getFirst().getSpawnLocation());
+            }
+        }
     }
 
     }
