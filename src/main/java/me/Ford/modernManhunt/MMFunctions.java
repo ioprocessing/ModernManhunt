@@ -8,6 +8,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -25,6 +28,7 @@ import org.codehaus.plexus.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 public class MMFunctions {
@@ -419,6 +423,22 @@ public class MMFunctions {
                 p.teleport(safeWorlds.getFirst().getSpawnLocation());
             }
         }
+    }
+
+    public static void resetPlayer(String name) {
+        Player p = Bukkit.getPlayer(name);
+        p.getInventory().clear();
+        Iterator<Advancement> iterator = Bukkit.getServer().advancementIterator();
+        while (iterator.hasNext())
+        {
+            AdvancementProgress progress = p.getAdvancementProgress(iterator.next());
+            for (String criteria : progress.getAwardedCriteria())
+                progress.revokeCriteria(criteria);
+        }
+        p.setExperienceLevelAndProgress(0);
+        p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
+        p.setFoodLevel(20);
+        p.setSaturation(20.0f);
     }
 
     }

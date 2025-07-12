@@ -44,6 +44,7 @@ public class EntityListener implements Listener {
 
     // Data tracking for custom bed bomb logic
     Location explosionLoc = null;
+    boolean bedExploded = false;
 
     public void GameEnd(String winnerMessage, NamedTextColor color) {
         // Call this when the game ends
@@ -116,7 +117,7 @@ public class EntityListener implements Listener {
                 }
             }
             // Detecting if the explosion was caused by a bed-- not the cleanest way, but I can't find any better methods
-            if (event.getDamageSource().getDamageType().equals(DamageType.EXPLOSION) && (event.getDamageSource().getCausingEntity() == null))
+            if (event.getDamageSource().getDamageType().equals(DamageType.EXPLOSION) && bedExploded)
                 event.deathMessage(Component.text()
                         .append(Component.text(p.getName()))
                         .append(Component.text(" was killed by [Intentional Game Design]"))
@@ -235,11 +236,16 @@ public class EntityListener implements Listener {
         /// NERF BED BOMBING ///
         if (event.getAction().isRightClick() && event.getClickedBlock() != null && event.getClickedBlock().getBlockData() instanceof Bed && ((p.getWorld().getEnvironment() == World.Environment.NETHER) || (p.getWorld().getEnvironment() == World.Environment.THE_END))) {
             event.setCancelled(true);
+            bedExploded = true;
             Block bed = event.getClickedBlock();
             bed.setType(Material.AIR);
             // Register the explosion location to check for later
             explosionLoc = event.getClickedBlock().getLocation();
             bed.getWorld().createExplosion(explosionLoc, 3, true, true, null);
+            // After a tick, set bedExploded back to false to avoid false positives
+            Bukkit.getScheduler().runTaskLater(ModernManhunt.getInstance(), () -> {
+                bedExploded = false;
+            }, 1L);
         }
     }
 

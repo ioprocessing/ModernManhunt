@@ -7,7 +7,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -146,26 +145,30 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
             case "start" -> {
                 if (!(mmRunners.getEntries().isEmpty()) && !(mmHunters.getEntries().isEmpty())) {
+                    // Disable locator bar
+                    String worldName = s.getWorld().getName();
+                    ArrayList<World> selectWorlds = new ArrayList<>();
+                    selectWorlds.add(Bukkit.getWorld(worldName));
+                    selectWorlds.add(Bukkit.getWorld(worldName + "_nether"));
+                    selectWorlds.add(Bukkit.getWorld(worldName + "_the_end"));
+                    for (World world : selectWorlds) {
+                        world.setGameRule(GameRule.LOCATOR_BAR, false);
+                    }
                     // Initialize title
                     Component mainTitle = Component.text("Get ready!", NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true);
                     Title.Times times = Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(3000), Duration.ofMillis(500));
                     // For each hunter,
                     for (String name : mmHunters.getEntries()) {
+                        MMFunctions.resetPlayer(name);
                         Player p = Bukkit.getPlayer(name);
                         // Make them healthy + clear their inventory
-                        p.getInventory().clear();
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "advancement revoke " + p.getName() + " everything");
-                        p.setExperienceLevelAndProgress(0);
-                        p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
-                        p.setFoodLevel(20);
-                        p.setSaturation(20.0f);
                         p.setMetadata("TargetedPlayer", new FixedMetadataValue(ModernManhunt.getInstance(), 0));
                         Title title = Title.title(mainTitle, Component.empty(), times);
                         p.showTitle(title);
 
                         // If the player's current respawn location isn't in the world the hunt starts in,
                         // set it to the default spawn location in that world
-                        if (p.getRespawnLocation().getWorld() != p.getLocation().getWorld())
+                        if (p.getRespawnLocation() == null || (p.getRespawnLocation().getWorld() != p.getLocation().getWorld()))
                             p.setRespawnLocation(p.getWorld().getSpawnLocation());
 
                         // And give them a compass
@@ -178,19 +181,14 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     // For each runner,
                     for (String name : mmRunners.getEntries()) {
                         // Make them healthy and mark that they're being hunted
+                        MMFunctions.resetPlayer(name);
                         Player p = Bukkit.getPlayer(name);
-                        p.getInventory().clear();
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "advancement revoke " + p.getName() + " everything");
-                        p.setExperienceLevelAndProgress(0);
-                        p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
-                        p.setFoodLevel(20);
-                        p.setSaturation(20.0f);
                         p.setMetadata("BeingHunted", new FixedMetadataValue(ModernManhunt.getInstance(), true));
                         Component runSubtitle = Component.text("Punch a hunter or start running to begin", NamedTextColor.GREEN);
                         Title title = Title.title(mainTitle, runSubtitle, times);
                         p.showTitle(title);
 
-                        if (p.getRespawnLocation().getWorld() != p.getLocation().getWorld())
+                        if (p.getRespawnLocation() == null || (p.getRespawnLocation().getWorld() != p.getLocation().getWorld()))
                             p.setRespawnLocation(p.getWorld().getSpawnLocation());
                     }
                     for (Player p : s.getWorld().getPlayers()) {
