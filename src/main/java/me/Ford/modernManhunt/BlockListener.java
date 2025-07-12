@@ -1,5 +1,6 @@
 package me.Ford.modernManhunt;
 
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -39,6 +40,7 @@ public class BlockListener implements Listener {
             drop.setAmount(stack_size);
             event.setDropItems(false);
             b.getWorld().dropItemNaturally(b.getLocation(), drop);
+            b.getWorld().playEffect(b.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
 
             // Increment EXP values on the pickaxe
             ItemMeta meta = handItem.getItemMeta();

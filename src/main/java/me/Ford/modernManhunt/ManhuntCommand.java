@@ -154,6 +154,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         Player p = Bukkit.getPlayer(name);
                         // Make them healthy + clear their inventory
                         p.getInventory().clear();
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "advancement revoke " + p.getName() + " everything");
                         p.setExperienceLevelAndProgress(0);
                         p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
                         p.setFoodLevel(20);
@@ -179,6 +180,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         // Make them healthy and mark that they're being hunted
                         Player p = Bukkit.getPlayer(name);
                         p.getInventory().clear();
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "advancement revoke " + p.getName() + " everything");
                         p.setExperienceLevelAndProgress(0);
                         p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
                         p.setFoodLevel(20);
