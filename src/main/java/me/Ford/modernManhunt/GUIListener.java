@@ -2,6 +2,7 @@ package me.Ford.modernManhunt;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -59,7 +60,12 @@ public class GUIListener implements Listener {
         if (e.getCurrentItem() == null || !e.getCurrentItem().getType().equals(Material.PLAYER_HEAD))
                 return;
             SkullMeta meta = (SkullMeta) e.getCurrentItem().getItemMeta();
-            p.teleport(meta.getOwningPlayer().getLocation());
+            if (!(p.hasMetadata("OpenedTPMenu") && meta.getOwningPlayer().getPlayer().isDead()))
+                p.teleport(meta.getOwningPlayer().getLocation());
+            else {
+                p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 0.9f);
+                p.sendMessage("§cThat player is currently respawning!");
+            }
             p.closeInventory();
         }
     }
