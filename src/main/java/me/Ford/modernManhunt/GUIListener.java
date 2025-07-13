@@ -53,6 +53,10 @@ public class GUIListener implements Listener {
                         p.openInventory(RecipeGUI.GoldenHeadRecipe(p));
                         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Golden Head Recipe"));
                     }
+                    case 7 -> {
+                        p.openInventory(RecipeGUI.LoyaltyRecipe(p));
+                        p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Loyalty Book Recipe"));
+                    }
                 }
             }
         } else if (p.hasMetadata("OpenedSpectatorMenu") || p.hasMetadata("OpenedTPMenu")) {

@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 
 public final class CustomRecipes {
 
@@ -168,6 +169,25 @@ public final class CustomRecipes {
             Bukkit.removeRecipe(Keys.TRIDENT_RECIPE);
         }
         Bukkit.addRecipe(tridentRecipe);
+
+        /// Loyalty ///
+
+        // Create book ItemStack
+        ItemStack book = MMFunctions.loyaltyBook();
+
+        // Outline the recipe shape
+        ShapelessRecipe loyaltyRecipe = new ShapelessRecipe(Keys.LOYALTY_RECIPE, book);
+
+        // Now just substitute the ingredients
+        loyaltyRecipe.addIngredient(1, Material.ENDER_PEARL);
+        loyaltyRecipe.addIngredient(1, Material.COMPASS);
+        loyaltyRecipe.addIngredient(1, Material.BOOK);
+
+        // Don't duplicate recipe
+        if (Bukkit.getRecipe(Keys.LOYALTY_RECIPE) != null) {
+            Bukkit.removeRecipe(Keys.LOYALTY_RECIPE);
+        }
+        Bukkit.addRecipe(loyaltyRecipe);
 
     }
 

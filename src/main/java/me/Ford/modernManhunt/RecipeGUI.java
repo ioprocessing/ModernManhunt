@@ -56,4 +56,11 @@ public class RecipeGUI {
 
         return inventory;
     }
+
+    public static Inventory LoyaltyRecipe(Player p) {
+        Inventory inventory = Bukkit.createInventory(p, InventoryType.WORKBENCH, Component.text("Loyalty Book (Shapeless)"));
+        inventory.setContents(Collections.LOYALTY_INGREDIENTS);
+
+        return inventory;
+    }
 }

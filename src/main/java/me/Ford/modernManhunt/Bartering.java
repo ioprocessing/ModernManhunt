@@ -30,7 +30,7 @@ public class Bartering {
         } else if ((24 <= random) && (random <= 33)) {
             ItemStack potion = new ItemStack(Material.SPLASH_POTION);
             PotionMeta meta = (PotionMeta) potion.getItemMeta();
-            PotionEffect effect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 180, 0);
+            PotionEffect effect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 3600, 0);
             meta.addCustomEffect(effect, true);
             meta.setColor(Color.fromRGB(228, 154, 58));
             potion.setItemMeta(meta);
@@ -38,7 +38,7 @@ public class Bartering {
         } else if ((34 <= random) && (random <= 43)) {
             ItemStack potion = new ItemStack(Material.POTION);
             PotionMeta meta = (PotionMeta) potion.getItemMeta();
-            PotionEffect effect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 180, 0);
+            PotionEffect effect = new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 3600, 0);
             meta.addCustomEffect(effect, true);
             meta.setColor(Color.fromRGB(228, 154, 58));
             potion.setItemMeta(meta);

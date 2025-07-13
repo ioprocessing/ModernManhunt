@@ -116,4 +116,11 @@ public class Collections {
             new ItemStack(Material.GOLD_INGOT),
             new ItemStack(Material.GOLD_INGOT),
             new ItemStack(Material.GOLD_INGOT)};
+
+    public static final ItemStack[] LOYALTY_INGREDIENTS = {
+            MMFunctions.loyaltyBook(),
+            new ItemStack(Material.ENDER_PEARL),
+            new ItemStack(Material.BOOK),
+            null,
+            new ItemStack(Material.COMPASS)};
 }

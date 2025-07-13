@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CompassMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
@@ -50,7 +51,7 @@ public class MMFunctions {
                         .append(Component.text("CONSUME").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
                         .append(Component.text(" to gain Speed II (10s)").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                         .build(),
-                Component.text("and Saturation I (0.5s). Also").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                Component.text("and Saturation I (0.25s). Also").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                 Component.text()
                         .append(Component.text("used to craft ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                         .append(Component.text("Golden Heads").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
@@ -87,7 +88,7 @@ public class MMFunctions {
                         .append(Component.text("CONSUME").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
                         .append(Component.text(" to gain Saturation I (0.5s),").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                         .build(),
-                Component.text("Speed II (15s), Absorption I (120s),").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                Component.text("Speed II (15s), Absorption II (120s),").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                 Component.text("and Regeneration IV (5s).").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
 
         meta.customName(head_name);
@@ -239,6 +240,7 @@ public class MMFunctions {
         i.setItem(4, MMFunctions.CompactAnvil());
         i.setItem(5, MMFunctions.BundledArrows());
         i.setItem(6, MMFunctions.GoldenHead());
+        i.setItem(7, MMFunctions.loyaltyBook());
 
         p.openInventory(i);
         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(),  "Recipes Menu"));
@@ -465,6 +467,14 @@ public class MMFunctions {
         // Set the item meta
         tpStar.setItemMeta(meta);
         return tpStar;
+    }
+
+    public static ItemStack loyaltyBook() {
+        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+        EnchantmentStorageMeta esm = (EnchantmentStorageMeta)book.getItemMeta();
+        esm.addStoredEnchant(Enchantment.LOYALTY, 1, false);
+        book.setItemMeta(esm);
+        return book;
     }
 
     }

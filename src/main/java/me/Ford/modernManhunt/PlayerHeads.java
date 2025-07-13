@@ -20,7 +20,7 @@ public class PlayerHeads {
 
         // Then add the potion effects and cooldown
 
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 10, 0));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 5, 0));
         p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1));
         p.setCooldown(Keys.HEAD_GROUP, 20);
 

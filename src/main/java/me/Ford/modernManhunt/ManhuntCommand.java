@@ -319,7 +319,9 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                 s.sendMessage(Component.text("§6> §a/recipes" +
                         "\n§6> §a/mm [runner/hunter] [add/remove] <player name>" +
                         "\n§6> §a/mm [runner/hunter] list" +
-                        "\n§6> §a/mm world [create/delete/tp] <world name>" +
+                        "\n§6> §a/mm handicap [add/remove] <hunter name>" +
+                        "\n§6> §a/mm handicap list" +
+                        "\n§6> §a/mm world [create/delete/tp/unload] <world name>" +
                         "\n§6> §a/mm world list" +
                         "\n§6> §a/mm start" +
                         "\n§6> §a/mm stop" +
@@ -344,7 +346,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     }
                     case "remove" -> {
                         String p =  args[2];
-                        if (mmHunters.getEntries().contains(p)) {
+                        if (Config.handicapList.contains(p)) {
                             Config.getInstance().remove(p, "handicap");
                             s.sendMessage("§aSuccessfully removed that player from the handicap list!");
                         }
