@@ -270,7 +270,7 @@ public class EntityListener implements Listener {
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
         Player p =  event.getPlayer();
-        if (Config.handicapList.contains(p.getName()))
+        if (Config.handicapList.contains(p.getName()) && ManhuntCommand.mmHunters.getEntries().contains(p.getName()))
             p.getInventory().setItem(7, MMFunctions.TPStar());
         if (p.hasMetadata("DeadRunner")) {
             MMFunctions.EnterSpectator(p);
