@@ -1,4 +1,4 @@
-package me.Ford.modernManhunt;
+package me.Ford.modernManhunt.PlayerListeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-public class RespawnListener implements Listener {
+public class RespawnLocationListener implements Listener {
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {

@@ -1,25 +1,26 @@
-package me.Ford.modernManhunt;
+package me.Ford.modernManhunt.CustomItemListeners;
 
+import me.Ford.modernManhunt.Collections;
+import me.Ford.modernManhunt.Functions;
+import me.Ford.modernManhunt.Keys;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-public class BlockListener implements Listener {
+public class PrimedPickaxeListener implements Listener {
 
 
 
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
+    public void onPrimedPickaxeBreak(BlockBreakEvent event) {
         Block b = event.getBlock();
         ItemStack handItem = event.getPlayer().getInventory().getItemInMainHand();
         if (handItem.getItemMeta() != null && handItem.getItemMeta().getPersistentDataContainer().has(Keys.PRIMED_PICK) && Collections.SMELT.containsKey(b.getType())) {
@@ -30,13 +31,15 @@ public class BlockListener implements Listener {
 
             // Set increased stack size for copper ore
             if (drop.getType().equals(Material.COPPER_INGOT)) {
-                stack_size = MMFunctions.random(5, 2);
+                stack_size = Functions.random(5, 2);
             }
 
+            // Recreate Minecraft's fortune logic
             if (Math.random() - (2f / (handItem.getEnchantmentLevel(Enchantment.FORTUNE) + 2)) > 0) {
-                stack_size *= MMFunctions.random(handItem.getEnchantmentLevel(Enchantment.FORTUNE)+1, 2);
+                stack_size *= Functions.random(handItem.getEnchantmentLevel(Enchantment.FORTUNE)+1, 2);
             }
 
+            // Replace the dropped items and show the flame particle effects
             drop.setAmount(stack_size);
             event.setDropItems(false);
             b.getWorld().dropItemNaturally(b.getLocation(), drop);
@@ -47,6 +50,8 @@ public class BlockListener implements Listener {
             float currentExp = meta.getPersistentDataContainer().get(Keys.PRIMED_PICK_EXP, PersistentDataType.FLOAT);
             currentExp += Collections.EXP.get(drop.getType());
             meta.getPersistentDataContainer().set(Keys.PRIMED_PICK_EXP, PersistentDataType.FLOAT, currentExp);
+
+            // If the total stored exp > 1, deposit the XP in the world like a furnace would
             if(currentExp >= 1.0f) {
                 ExperienceOrb orb = b.getWorld().spawn(b.getLocation(), ExperienceOrb.class);
                 orb.setExperience(1);
@@ -54,30 +59,5 @@ public class BlockListener implements Listener {
             }
             handItem.setItemMeta(meta);
         }
-    }
-
-    @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event) {
-        ItemMeta handItem = event.getItemInHand().getItemMeta();
-        Player player = event.getPlayer();
-
-        // Check if the item being clicked with has the 'CONSUMABLE_HEAD' key
-        if (handItem.getPersistentDataContainer().has(Keys.CONSUMABLE_HEAD)) {
-
-            // Then cancel the event and 'consume' the item
-            event.setCancelled(true);
-            PlayerHeads.consumePlayerHead(player, event.getItemInHand());
-
-        }
-
-        // Separate effect for gheads
-        else if (handItem.getPersistentDataContainer().has(Keys.GOLDEN_HEAD)) {
-
-            // Then cancel the event and 'consume' the item
-            event.setCancelled(true);
-            PlayerHeads.consumeGoldenHead(player, event.getItemInHand());
-
-        }
-
     }
 }

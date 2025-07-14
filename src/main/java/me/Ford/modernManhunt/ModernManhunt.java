@@ -1,5 +1,14 @@
 package me.Ford.modernManhunt;
 
+import me.Ford.modernManhunt.Commands.ManhuntCommand;
+import me.Ford.modernManhunt.Commands.RecipesCommand;
+import me.Ford.modernManhunt.CustomItemListeners.HeadListener;
+import me.Ford.modernManhunt.CustomItemListeners.PrimedPickaxeListener;
+import me.Ford.modernManhunt.CustomItemListeners.SafetyListener;
+import me.Ford.modernManhunt.CustomItems.CustomRecipes;
+import me.Ford.modernManhunt.GUI.GUIListener;
+import me.Ford.modernManhunt.OtherListeners.EntityListener;
+import me.Ford.modernManhunt.PlayerListeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -52,12 +61,19 @@ public final class ModernManhunt extends JavaPlugin {
     @Override
     public void onEnable() {
         CustomRecipes.register();
-        getServer().getPluginManager().registerEvents(new EntityListener(), this);
-        getServer().getPluginManager().registerEvents(new InventoryListener(), this);
-        getServer().getPluginManager().registerEvents(new BlockListener(), this);
+        getServer().getPluginManager().registerEvents(new HeadListener(), this);
+        getServer().getPluginManager().registerEvents(new PrimedPickaxeListener(), this);
+        getServer().getPluginManager().registerEvents(new SafetyListener(), this);
         getServer().getPluginManager().registerEvents(new GUIListener(), this);
-        getServer().getPluginManager().registerEvents(new PortalListener(), this);
-        getServer().getPluginManager().registerEvents(new RespawnListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityListener(), this);
+        getServer().getPluginManager().registerEvents(new BedBombingListener(), this);
+        getServer().getPluginManager().registerEvents(new DeathMessageListener(), this);
+        getServer().getPluginManager().registerEvents(new DimensionTravelListener(), this);
+        getServer().getPluginManager().registerEvents(new HunterListener(), this);
+        getServer().getPluginManager().registerEvents(new RespawnEffectListener(), this);
+        getServer().getPluginManager().registerEvents(new RespawnLocationListener(), this);
+        getServer().getPluginManager().registerEvents(new RunnerListener(), this);
+        getServer().getPluginManager().registerEvents(new SpectatorInteractionListener(), this);
         Objects.requireNonNull(getCommand("recipes")).setExecutor(new RecipesCommand());
         Objects.requireNonNull(getCommand("manhunt")).setExecutor(new ManhuntCommand());
         Config.getInstance().load();
@@ -79,7 +95,7 @@ public final class ModernManhunt extends JavaPlugin {
             p.removeMetadata("OpenedRecipesMenu", this);
             p.removeMetadata("OpenedSpectatorMenu", this);
             if (p.hasMetadata("DeadRunner")) {
-                MMFunctions.ExitSpectator(p);
+                Functions.exitSpectator(p);
             }
             p.removeMetadata("BeingHunted", this);
             p.removeMetadata("TargetedPlayer", this);

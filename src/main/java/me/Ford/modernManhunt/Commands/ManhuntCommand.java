@@ -1,7 +1,12 @@
-package me.Ford.modernManhunt;
+package me.Ford.modernManhunt.Commands;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.LodestoneTracker;
+import me.Ford.modernManhunt.Config;
+import me.Ford.modernManhunt.CustomItems.CustomItems;
+import me.Ford.modernManhunt.Functions;
+import me.Ford.modernManhunt.ModernManhunt;
+import me.Ford.modernManhunt.Seeds;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -14,8 +19,6 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
@@ -31,11 +34,10 @@ import java.util.Random;
 
 public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
-    public static ScoreboardManager manager = Bukkit.getScoreboardManager();
-    public static Scoreboard board = manager.getNewScoreboard();
-    public static Team mmRunners = board.registerNewTeam("mmRunners");
-    public static Team mmHunters = board.registerNewTeam("mmHunters");
+    public static Team mmRunners = Functions.board.registerNewTeam("mmRunners");
+    public static Team mmHunters = Functions.board.registerNewTeam("mmHunters");
     public static ArrayList<Player> runnerArray = new ArrayList<>();
+    public static ArrayList<Player> hunterArray = new ArrayList<>();
     public static ArrayList<Player> participantArray = new ArrayList<>();
 
     @Override
@@ -65,8 +67,10 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     case "add" -> {
                         Player p =  Bukkit.getPlayer(args[2]);
                         if (!(mmRunners.getEntries().contains(p.getName()))) {
-                            if (mmHunters.getEntries().contains(p.getName()))
+                            if (mmHunters.getEntries().contains(p.getName())) {
                                 mmHunters.removeEntity(p);
+                                hunterArray.remove(p);
+                            }
                             mmRunners.addEntity(p);
                             runnerArray.add(p);
                             participantArray.add(p);
@@ -79,7 +83,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         if (mmRunners.getEntries().contains(p.getName())) {
                             mmRunners.removeEntity(p);
                             runnerArray.remove(p);
-                            participantArray.add(p);
+                            participantArray.remove(p);
                             s.sendMessage("§aSuccessfully removed that player from the runners!");
                         }
                         else s.sendMessage("§cThat player isn't a runner!");
@@ -110,9 +114,12 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     case "add" -> {
                         Player p =  Bukkit.getPlayer(args[2]);
                         if (!(mmHunters.getEntries().contains(p.getName()))) {
-                            if (mmRunners.getEntries().contains(p.getName()))
+                            if (mmRunners.getEntries().contains(p.getName())) {
                                 mmRunners.removeEntity(p);
+                                runnerArray.remove(p);
+                            }
                             mmHunters.addEntity(p);
+                            hunterArray.add(p);
                             participantArray.add(p);
                             s.sendMessage("§aSuccessfully added that player to the hunters!");
                         }
@@ -122,7 +129,8 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         Player p =  Bukkit.getPlayer(args[2]);
                         if (mmHunters.getEntries().contains(p.getName())) {
                             mmHunters.removeEntity(p);
-                            participantArray.add(p);
+                            hunterArray.remove(p);
+                            participantArray.remove(p);
                             s.sendMessage("§aSuccessfully removed that player from the hunters!");
                         }
                         else s.sendMessage("§cThat player isn't a hunter!");
@@ -160,11 +168,11 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     // For each hunter,
                     for (String name : mmHunters.getEntries()) {
                         // Make them healthy + clear their inventory
-                        MMFunctions.resetPlayer(name);
+                        Functions.resetPlayer(name);
                         Player p = Bukkit.getPlayer(name);
                         // If the player is on the handicap list, give them the TP star
                         if (Config.handicapList.contains(p.getName()))
-                            p.getInventory().setItem(7, MMFunctions.TPStar());
+                            p.getInventory().setItem(7, CustomItems.tpStar());
                         p.setMetadata("TargetedPlayer", new FixedMetadataValue(ModernManhunt.getInstance(), 0));
                         Title title = Title.title(mainTitle, Component.empty(), times);
                         p.showTitle(title);
@@ -175,7 +183,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                             p.setRespawnLocation(p.getWorld().getSpawnLocation());
 
                         // And give them a compass
-                        ItemStack compass = MMFunctions.HunterCompass(p);
+                        ItemStack compass = CustomItems.hunterCompass(p);
                         LodestoneTracker loc = LodestoneTracker.lodestoneTracker(ManhuntCommand.runnerArray.getFirst().getLocation(), false);
                         compass.setData(DataComponentTypes.LODESTONE_TRACKER, loc);
                         p.getInventory().setItem(8, compass);
@@ -184,7 +192,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     // For each runner,
                     for (String name : mmRunners.getEntries()) {
                         // Make them healthy and mark that they're being hunted
-                        MMFunctions.resetPlayer(name);
+                        Functions.resetPlayer(name);
                         Player p = Bukkit.getPlayer(name);
                         p.setMetadata("BeingHunted", new FixedMetadataValue(ModernManhunt.getInstance(), true));
                         Component runSubtitle = Component.text("Punch a hunter or start running to begin", NamedTextColor.GREEN);
@@ -208,7 +216,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     p.removeMetadata("BeingHunted",  ModernManhunt.getInstance());
                     if (p.hasMetadata("DeadRunner")) {
-                        MMFunctions.ExitSpectator(p);
+                        Functions.exitSpectator(p);
                     }
                 }
                 s.sendMessage("§cEnded the current manhunt and cleared all tags");
@@ -225,8 +233,8 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     case "create" -> {
                         if ( !(Bukkit.getWorld(args[2]) == null) || !StringUtils.isAlphanumeric(args[2]))
                             return false;
-                        Long randomSeed = new ArrayList<>(Resources.seedSet)
-                                .get(new Random().nextInt(Resources.seedSet.size()));
+                        Long randomSeed = new ArrayList<>(Seeds.seedSet)
+                                .get(new Random().nextInt(Seeds.seedSet.size()));
 
                         // OVERWORLD
 
@@ -257,13 +265,13 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     }
 
                     case "delete" -> {
-                        ArrayList<World> selectedWorlds = MMFunctions.unloadWorlds(args[2]);
+                        ArrayList<World> selectedWorlds = Functions.unloadWorlds(args[2]);
                         if (selectedWorlds == null)
                             return false;
                         // For each world to unload,
                         for (World currentWorld : selectedWorlds) {
                             // Check for players and move them elsewhere
-                            MMFunctions.checkForPlayers(currentWorld, selectedWorlds);
+                            Functions.checkForPlayers(currentWorld, selectedWorlds);
                             Bukkit.unloadWorld(currentWorld, false);
                             try {
                                 FileUtils.deleteDirectory(currentWorld.getWorldFolder());
@@ -293,19 +301,19 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         if (worlds.contains(args[2])) {
                             if (args[2].endsWith("_the_end")) {
                                 s.teleport(new Location(Bukkit.getWorld(args[2]), 100.5, 49, 0.5, 90.0f, s.getPitch()));
-                                MMFunctions.GenerateEndPlatform(Bukkit.getWorld(args[2]));
+                                Functions.generateEndPlatform(Bukkit.getWorld(args[2]));
                             } else s.teleport(Bukkit.getWorld(args[2]).getSpawnLocation());
                         } else return false;
                     }
 
                     case "unload" -> {
-                        ArrayList<World> selectedWorlds = MMFunctions.unloadWorlds(args[2]);
+                        ArrayList<World> selectedWorlds = Functions.unloadWorlds(args[2]);
                         if (selectedWorlds == null)
                             return false;
                         // For each world to unload,
                         for (World currentWorld : selectedWorlds) {
                             // Check for players and move them elsewhere
-                            MMFunctions.checkForPlayers(currentWorld, selectedWorlds);
+                            Functions.checkForPlayers(currentWorld, selectedWorlds);
                             Bukkit.unloadWorld(currentWorld, false);
                         }
                         s.sendRawMessage("§aWorld " + args[2] + " successfully unloaded!");

@@ -1,5 +1,6 @@
-package me.Ford.modernManhunt;
+package me.Ford.modernManhunt.CustomItems;
 
+import me.Ford.modernManhunt.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +13,7 @@ public final class CustomRecipes {
 
         /// GOLDEN HEAD ///
 
-        ItemStack goldenHead = MMFunctions.GoldenHead();
+        ItemStack goldenHead = CustomItems.goldenHead();
 
         // Outline the recipe shape
         ShapedRecipe gHeadRecipe = new ShapedRecipe(Keys.GOLDEN_HEAD_RECIPE, goldenHead);
@@ -34,7 +35,7 @@ public final class CustomRecipes {
 
         /// FIERY PICKAXE ///
 
-        ItemStack primePick = MMFunctions.PrimedPickaxe();
+        ItemStack primePick = CustomItems.primedPickaxe();
 
         // Outline the recipe shape
         ShapedRecipe pPickRecipe = new ShapedRecipe(Keys.PRIMED_PICK_RECIPE, primePick);
@@ -57,7 +58,7 @@ public final class CustomRecipes {
 
         /// STRENGTHENED SWORD ///
 
-        ItemStack strengthSword = MMFunctions.StrengthenedSword();
+        ItemStack strengthSword = CustomItems.strengthenedSword();
 
         // Outline the recipe shape
         ShapedRecipe sSwordRecipe = new ShapedRecipe(Keys.STRENGTH_SWORD_RECIPE, strengthSword);
@@ -79,7 +80,7 @@ public final class CustomRecipes {
 
         /// Bolstered Bow ///
 
-        ItemStack bolsterBow = MMFunctions.BolsteredBow();
+        ItemStack bolsterBow = CustomItems.bolsteredBow();
 
         // Outline the recipe shape
         ShapedRecipe bBowRecipe = new ShapedRecipe(Keys.BOLSTER_BOW_RECIPE, bolsterBow);
@@ -173,7 +174,7 @@ public final class CustomRecipes {
         /// Loyalty ///
 
         // Create book ItemStack
-        ItemStack book = MMFunctions.loyaltyBook();
+        ItemStack book = CustomItems.loyaltyBook();
 
         // Outline the recipe shape
         ShapelessRecipe loyaltyRecipe = new ShapelessRecipe(Keys.LOYALTY_RECIPE, book);

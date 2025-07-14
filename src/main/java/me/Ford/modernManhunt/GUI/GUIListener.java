@@ -1,5 +1,8 @@
-package me.Ford.modernManhunt;
+package me.Ford.modernManhunt.GUI;
 
+import me.Ford.modernManhunt.Functions;
+import me.Ford.modernManhunt.ModernManhunt;
+import me.Ford.modernManhunt.CustomItems.RecipeFunctions;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -26,35 +29,35 @@ public class GUIListener implements Listener {
 
                 switch (e.getSlot()) {
                     case 0 -> {
-                        p.openInventory(RecipeGUI.PrimedPickaxeRecipe(p));
+                        p.openInventory(RecipeFunctions.primedPickaxeRecipe(p));
                         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Primed Pickaxe Recipe"));
                     }
                     case 1 -> {
-                        p.openInventory(RecipeGUI.StrengthenedSwordRecipe(p));
+                        p.openInventory(RecipeFunctions.strengthenedSwordRecipe(p));
                         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Strengthened Sword Recipe"));
                     }
                     case 2 -> {
-                        p.openInventory(RecipeGUI.BolsteredBowRecipe(p));
+                        p.openInventory(RecipeFunctions.bolsteredBowRecipe(p));
                         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Bolstered Bow Recipe"));
                     }
                     case 3 -> {
-                        p.openInventory(RecipeGUI.TridentRecipe(p));
+                        p.openInventory(RecipeFunctions.tridentRecipe(p));
                         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Trident Recipe"));
                     }
                     case 4 -> {
-                        p.openInventory(RecipeGUI.CompactAnvilRecipe(p));
+                        p.openInventory(RecipeFunctions.compactAnvilRecipe(p));
                         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Compact Anvil Recipe"));
                     }
                     case 5 -> {
-                        p.openInventory(RecipeGUI.BundledArrowsRecipe(p));
+                        p.openInventory(RecipeFunctions.bundledArrowsRecipe(p));
                         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Bundle of Arrows Recipe"));
                     }
                     case 6 -> {
-                        p.openInventory(RecipeGUI.GoldenHeadRecipe(p));
+                        p.openInventory(RecipeFunctions.goldenHeadRecipe(p));
                         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Golden Head Recipe"));
                     }
                     case 7 -> {
-                        p.openInventory(RecipeGUI.LoyaltyRecipe(p));
+                        p.openInventory(RecipeFunctions.loyaltyRecipe(p));
                         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Loyalty Book Recipe"));
                     }
                 }
@@ -87,7 +90,7 @@ public class GUIListener implements Listener {
             p.removeMetadata("OpenedRecipesMenu", ModernManhunt.getInstance());
         } else {
             Bukkit.getScheduler().runTask(ModernManhunt.getInstance(), () -> {
-                MMFunctions.OpenRecipesMenu(p);
+                Functions.openRecipesMenu(p);
             });
         }
     }

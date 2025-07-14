@@ -1,10 +1,18 @@
 package me.Ford.modernManhunt;
 
+import me.Ford.modernManhunt.CustomItems.CustomItems;
+import me.Ford.modernManhunt.Records.BarteringDrops;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static me.Ford.modernManhunt.Functions.random;
 
 public class Collections {
     public static final Map<Material, Material> SMELT = new HashMap<>();
@@ -34,7 +42,7 @@ public class Collections {
             }
 
     public static final ItemStack[] PRIMED_PICKAXE_INGREDIENTS = {
-            MMFunctions.PrimedPickaxe(),
+            CustomItems.primedPickaxe(),
             new ItemStack(Material.RAW_IRON),
             new ItemStack(Material.RAW_IRON),
             new ItemStack(Material.RAW_IRON),
@@ -46,7 +54,7 @@ public class Collections {
             null};
 
     public static final ItemStack[] STRENGTHENED_SWORD_INGREDIENTS = {
-            MMFunctions.StrengthenedSword(),
+            CustomItems.strengthenedSword(),
             new ItemStack(Material.COPPER_INGOT),
             new ItemStack(Material.COPPER_INGOT),
             new ItemStack(Material.COPPER_INGOT),
@@ -58,7 +66,7 @@ public class Collections {
             new ItemStack(Material.COPPER_INGOT)};
 
     public static final ItemStack[] BOLSTERED_BOW_INGREDIENTS = {
-            MMFunctions.BolsteredBow(),
+            CustomItems.bolsteredBow(),
             new ItemStack(Material.COPPER_INGOT),
             new ItemStack(Material.COPPER_INGOT),
             new ItemStack(Material.COPPER_INGOT),
@@ -106,21 +114,53 @@ public class Collections {
             new ItemStack(Material.FEATHER)};
 
     public static final ItemStack[] GOLDEN_HEAD_INGREDIENTS = {
-            MMFunctions.GoldenHead(),
+            CustomItems.goldenHead(),
             new ItemStack(Material.GOLD_INGOT),
             new ItemStack(Material.GOLD_INGOT),
             new ItemStack(Material.GOLD_INGOT),
             new ItemStack(Material.GOLD_INGOT),
-            MMFunctions.DummyHead(),
+            CustomItems.dummyHead(),
             new ItemStack(Material.GOLD_INGOT),
             new ItemStack(Material.GOLD_INGOT),
             new ItemStack(Material.GOLD_INGOT),
             new ItemStack(Material.GOLD_INGOT)};
 
     public static final ItemStack[] LOYALTY_INGREDIENTS = {
-            MMFunctions.loyaltyBook(),
+            CustomItems.loyaltyBook(),
             new ItemStack(Material.ENDER_PEARL),
             new ItemStack(Material.BOOK),
             null,
             new ItemStack(Material.COMPASS)};
+
+    public static final List<BarteringDrops> CUSTOM_BARTER_POOL = List.of(
+            new BarteringDrops(5, () -> {
+                ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+                EnchantmentStorageMeta esm = (EnchantmentStorageMeta)book.getItemMeta();
+                esm.addStoredEnchant(Enchantment.SOUL_SPEED, random(3, 1), false);
+                book.setItemMeta(esm);
+                return book;
+            }),
+            new BarteringDrops(8, () -> {
+                ItemStack boots = new ItemStack(Material.IRON_BOOTS);
+                ItemMeta meta = boots.getItemMeta();
+                meta.addEnchant(Enchantment.SOUL_SPEED, random(3, 1), false);
+                boots.setItemMeta(meta);
+                return boots;
+            }),
+            new BarteringDrops(10, () -> new ItemStack(Material.IRON_NUGGET, random(36, 9))),
+            new BarteringDrops(10, () -> CustomItems.fireResistancePotion(true)),  // Splash
+            new BarteringDrops(10, () -> CustomItems.fireResistancePotion(false)), // Regular
+            new BarteringDrops(20, () -> new ItemStack(Material.QUARTZ, random(16, 8))),
+            new BarteringDrops(20, () -> new ItemStack(Material.GLOWSTONE_DUST, random(12, 5))),
+            new BarteringDrops(20, () -> new ItemStack(Material.MAGMA_CREAM, random(6, 2))),
+            new BarteringDrops(20, () -> new ItemStack(Material.ENDER_PEARL, random(8, 4))),
+            new BarteringDrops(20, () -> new ItemStack(Material.STRING, random(24, 8))),
+            new BarteringDrops(40, () -> new ItemStack(Material.FIRE_CHARGE, random(5, 1))),
+            new BarteringDrops(40, () -> new ItemStack(Material.GRAVEL, random(16, 8))),
+            new BarteringDrops(40, () -> new ItemStack(Material.LEATHER, random(10, 4))),
+            new BarteringDrops(40, () -> new ItemStack(Material.NETHER_BRICK, random(16, 4))),
+            new BarteringDrops(40, () -> new ItemStack(Material.OBSIDIAN, 1)),
+            new BarteringDrops(40, () -> new ItemStack(Material.CRYING_OBSIDIAN, random(3, 1))),
+            new BarteringDrops(40, () -> new ItemStack(Material.SOUL_SAND, random(16, 4)))
+    );
 }

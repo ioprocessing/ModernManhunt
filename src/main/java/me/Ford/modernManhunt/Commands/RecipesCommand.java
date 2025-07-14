@@ -1,5 +1,6 @@
-package me.Ford.modernManhunt;
+package me.Ford.modernManhunt.Commands;
 
+import me.Ford.modernManhunt.Functions;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +25,7 @@ public class RecipesCommand implements CommandExecutor, TabExecutor {
 
         Player p = (Player) sender;
 
-        MMFunctions.OpenRecipesMenu(p);
+        Functions.openRecipesMenu(p);
 
         return true;
     }

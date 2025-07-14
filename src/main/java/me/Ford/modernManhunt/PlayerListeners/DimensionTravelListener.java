@@ -1,5 +1,7 @@
-package me.Ford.modernManhunt;
+package me.Ford.modernManhunt.PlayerListeners;
 
+import me.Ford.modernManhunt.Functions;
+import me.Ford.modernManhunt.ModernManhunt;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -8,7 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-public class PortalListener implements Listener {
+public class DimensionTravelListener implements Listener {
     @EventHandler
     public void onPlayerPortal(PlayerPortalEvent event) {
         Location from = event.getFrom();
@@ -41,7 +43,7 @@ public class PortalListener implements Listener {
                 if (toWorld == null) return;
 
                 // Generate end platform
-                MMFunctions.GenerateEndPlatform(toWorld);
+                Functions.generateEndPlatform(toWorld);
 
                 // Always send them to the obsidian platform
                 to = new Location(toWorld, 100.5, 49, 0.5, 90.0f, event.getPlayer().getPitch());

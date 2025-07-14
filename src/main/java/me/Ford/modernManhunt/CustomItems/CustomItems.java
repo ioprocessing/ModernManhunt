@@ -1,44 +1,29 @@
-package me.Ford.modernManhunt;
+package me.Ford.modernManhunt.CustomItems;
 
+import me.Ford.modernManhunt.Commands.ManhuntCommand;
+import me.Ford.modernManhunt.Functions;
+import me.Ford.modernManhunt.Keys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
+import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.advancement.Advancement;
-import org.bukkit.advancement.AdvancementProgress;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.CompassMeta;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.meta.*;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.inventory.meta.components.UseCooldownComponent;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataType;
-import org.codehaus.plexus.util.StringUtils;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-public class MMFunctions {
-
-    public static int random(int max, int min) {
-        return (int)(Math.random() * (max - min + 1) + min);
-    }
-
-    public static ItemStack ConsumablePlayerHead(Player p) {
+public class CustomItems {
+    public static ItemStack consumablePlayerHead(Player p) {
 
         // Create the player head
         ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD);
@@ -75,9 +60,9 @@ public class MMFunctions {
         return playerHead;
     }
 
-    public static ItemStack GoldenHead() {
+    public static ItemStack goldenHead() {
 
-        // Create ghead ItemStack
+        // Create golden head ItemStack
         ItemStack goldenHead = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) goldenHead.getItemMeta();
 
@@ -110,7 +95,7 @@ public class MMFunctions {
         return goldenHead;
     }
 
-    public static ItemStack PrimedPickaxe() {
+    public static ItemStack primedPickaxe() {
 
         // Create primed pickaxe ItemStack
         ItemStack primePick = new ItemStack(Material.IRON_PICKAXE);
@@ -141,7 +126,7 @@ public class MMFunctions {
         return primePick;
     }
 
-    public static ItemStack StrengthenedSword() {
+    public static ItemStack strengthenedSword() {
 
         // Create strengthened sword ItemStack
         ItemStack strengthSword = new ItemStack(Material.IRON_SWORD);
@@ -168,7 +153,7 @@ public class MMFunctions {
         return strengthSword;
     }
 
-    public static ItemStack BolsteredBow() {
+    public static ItemStack bolsteredBow() {
 
         // Create bolstered bow ItemStack
         ItemStack bolsterBow = new ItemStack(Material.BOW);
@@ -195,7 +180,7 @@ public class MMFunctions {
         return bolsterBow;
     }
 
-    public static ItemStack BundledArrows() {
+    public static ItemStack bundledArrows() {
         ItemStack bundledArrows = new ItemStack(Material.ARROW);
         ItemMeta meta = bundledArrows.getItemMeta();
 
@@ -213,7 +198,7 @@ public class MMFunctions {
         return bundledArrows;
     }
 
-    public static ItemStack CompactAnvil() {
+    public static ItemStack compactAnvil() {
         ItemStack compactAnvil = new ItemStack(Material.ANVIL);
         ItemMeta meta = compactAnvil.getItemMeta();
 
@@ -230,23 +215,7 @@ public class MMFunctions {
         return compactAnvil;
     }
 
-    public static void OpenRecipesMenu(Player p) {
-        Inventory i = Bukkit.createInventory(p, 9, Component.text("Recipes"));
-
-        i.setItem(0, MMFunctions.PrimedPickaxe());
-        i.setItem(1, MMFunctions.StrengthenedSword());
-        i.setItem(2, MMFunctions.BolsteredBow());
-        i.setItem(3, new ItemStack(Material.TRIDENT));
-        i.setItem(4, MMFunctions.CompactAnvil());
-        i.setItem(5, MMFunctions.BundledArrows());
-        i.setItem(6, MMFunctions.GoldenHead());
-        i.setItem(7, MMFunctions.loyaltyBook());
-
-        p.openInventory(i);
-        p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(),  "Recipes Menu"));
-    }
-
-    public static ItemStack DummyHead() {
+    public static ItemStack dummyHead() {
         // Create dummy head for recipe
         ItemStack dummyHead = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) dummyHead.getItemMeta();
@@ -270,12 +239,7 @@ public class MMFunctions {
         return dummyHead;
     }
 
-    public static Player CurrentTarget(Player hunter) {
-        List<MetadataValue> metadata = hunter.getMetadata("TargetedPlayer");
-        return ManhuntCommand.runnerArray.get(metadata.getFirst().asInt());
-    }
-
-    public static ItemStack HunterCompass(Player hunter) {
+    public static ItemStack hunterCompass(Player hunter) {
 
         // Create compass ItemStack
         ItemStack hunterCompass = new ItemStack(Material.COMPASS);
@@ -286,7 +250,7 @@ public class MMFunctions {
         meta.lore(Arrays.asList(
                 Component.text()
                         .append(Component.text("CURRENT TARGET: ").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text(CurrentTarget(hunter).getName()).color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text(Functions.currentTarget(hunter).getName()).color(NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false))
                         .build(),
                 Component.text("A compass that points at the runner(s).").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                 Component.text("Right click to refresh the location").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
@@ -303,38 +267,7 @@ public class MMFunctions {
         return hunterCompass;
     }
 
-    public static void GenerateEndPlatform(World world) {
-        // Clear area for obsidian platform
-        for (int x = 0; x < 5; x++) {
-            for (int z = 0; z < 5; z++) {
-                Block block = world.getBlockAt(x + 98, 48, z - 2);
-                if (block.getType() == Material.OBSIDIAN) continue;
-                block.breakNaturally(false, true);
-                block.setType(Material.OBSIDIAN);
-            }
-        }
-
-        // Clear area for player
-        for (int x = 0; x < 5; x++) {
-            for (int z = 0; z < 5; z++) {
-                for (int y = 0; y < 3; y++) {
-                    world.getBlockAt(x + 98, 49 + y, z - 2).breakNaturally(false, true);
-                }
-            }
-        }
-    }
-
-    public static void EnterSpectator (Player p) {
-            p.setGameMode(GameMode.ADVENTURE);
-            p.setAllowFlight(true);
-            // Hide the spectator from all players
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                if (!onlinePlayer.hasMetadata("DeadRunner"))
-                    onlinePlayer.hidePlayer(ModernManhunt.getInstance(), p);
-            }
-        }
-
-    public static ItemStack SpectatorCompass() {
+    public static ItemStack spectatorCompass() {
 
         // Create compass ItemStack
         ItemStack spectatorCompass = new ItemStack(Material.COMPASS);
@@ -385,65 +318,7 @@ public class MMFunctions {
         return specHead;
     }
 
-    public static void ExitSpectator(Player p) {
-            for (Player onlinePlayers : Bukkit.getOnlinePlayers()) {
-                onlinePlayers.showPlayer(ModernManhunt.getInstance(), p);
-            }
-            p.setGameMode(GameMode.SURVIVAL);
-            p.clearActivePotionEffects();
-            p.removeMetadata("DeadRunner", ModernManhunt.getInstance());
-            p.setAllowFlight(false);
-            p.getInventory().clear();
-    }
-
-    public static ArrayList<World> unloadWorlds(String worldName) {
-        if (!StringUtils.isAlphanumeric(worldName) || (worldName.endsWith("_nether") ||  worldName.endsWith("_the_end")))
-            return null;
-        ArrayList<String> worlds = new ArrayList<>();
-        for (World world : Bukkit.getWorlds()) {
-            worlds.add(world.getName());
-        }
-        if (worlds.contains(worldName)) {
-            ArrayList<World> selectWorlds = new ArrayList<>();
-            selectWorlds.add(Bukkit.getWorld(worldName));
-            selectWorlds.add(Bukkit.getWorld(worldName + "_nether"));
-            selectWorlds.add(Bukkit.getWorld(worldName + "_the_end"));
-            return selectWorlds;
-        } else return null;
-    }
-
-    public static void checkForPlayers(World world, ArrayList<World> selectedWorlds) {
-        if (!world.getPlayers().isEmpty()) {
-            // Get a list of all worlds
-            List<World> safeWorlds = Bukkit.getWorlds();
-            for (World unsafeWorld : selectedWorlds) {
-                // And remove the current set of worlds marked for deletion
-                safeWorlds.remove(unsafeWorld);
-            }
-            // Then teleport every player in the unempty world to a safe world
-            for (Player p : world.getPlayers()) {
-                p.teleport(safeWorlds.getFirst().getSpawnLocation());
-            }
-        }
-    }
-
-    public static void resetPlayer(String name) {
-        Player p = Bukkit.getPlayer(name);
-        p.getInventory().clear();
-        Iterator<Advancement> iterator = Bukkit.getServer().advancementIterator();
-        while (iterator.hasNext())
-        {
-            AdvancementProgress progress = p.getAdvancementProgress(iterator.next());
-            for (String criteria : progress.getAwardedCriteria())
-                progress.revokeCriteria(criteria);
-        }
-        p.setExperienceLevelAndProgress(0);
-        p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
-        p.setFoodLevel(20);
-        p.setSaturation(20.0f);
-    }
-
-    public static ItemStack TPStar() {
+    public static ItemStack tpStar() {
 
         // Create compass ItemStack
         ItemStack tpStar = new ItemStack(Material.NETHER_STAR);
@@ -477,4 +352,18 @@ public class MMFunctions {
         return book;
     }
 
+    public static ItemStack fireResistancePotion(boolean splash) {
+        ItemStack potion = new ItemStack(splash ? Material.SPLASH_POTION : Material.POTION);
+        PotionMeta meta = (PotionMeta) potion.getItemMeta();
+        TextComponent potion_name;
+        if (splash)
+            potion_name = Component.text("Splash Potion of Fire Resistance",  NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false);
+        else
+            potion_name = Component.text("Potion of Fire Resistance",  NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false);
+        meta.addCustomEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 3600, 0), true);
+        meta.setColor(Color.fromRGB(228, 154, 58));
+        meta.customName(potion_name);
+        potion.setItemMeta(meta);
+        return potion;
     }
+}
