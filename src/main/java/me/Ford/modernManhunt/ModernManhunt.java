@@ -8,6 +8,7 @@ import me.Ford.modernManhunt.CustomItemListeners.SafetyListener;
 import me.Ford.modernManhunt.CustomItems.CustomRecipes;
 import me.Ford.modernManhunt.GUI.GUIListener;
 import me.Ford.modernManhunt.OtherListeners.EntityListener;
+import me.Ford.modernManhunt.OtherListeners.StrengthListener;
 import me.Ford.modernManhunt.PlayerListeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -74,6 +75,7 @@ public final class ModernManhunt extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RespawnLocationListener(), this);
         getServer().getPluginManager().registerEvents(new RunnerListener(), this);
         getServer().getPluginManager().registerEvents(new SpectatorInteractionListener(), this);
+        getServer().getPluginManager().registerEvents(new StrengthListener(), this);
         Objects.requireNonNull(getCommand("recipes")).setExecutor(new RecipesCommand());
         Objects.requireNonNull(getCommand("manhunt")).setExecutor(new ManhuntCommand());
         Config.getInstance().load();
