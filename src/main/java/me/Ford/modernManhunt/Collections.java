@@ -17,6 +17,7 @@ import static me.Ford.modernManhunt.Functions.random;
 public class Collections {
     public static final Map<Material, Material> SMELT = new HashMap<>();
     public static final Map<Material, Float> EXP = new HashMap<>();
+    public static final Map<String, ItemStack> RECIPES = new HashMap<>();
             static {
                 SMELT.put(Material.IRON_ORE, Material.IRON_INGOT);
                 SMELT.put(Material.COPPER_ORE, Material.COPPER_INGOT);
@@ -39,6 +40,15 @@ public class Collections {
                 EXP.put(Material.GOLD_BLOCK, 1.0f);
                 EXP.put(Material.GLASS, 0.1f);
                 EXP.put(Material.SPONGE, 0.15f);
+
+                RECIPES.put("Primed Pickaxe", CustomItems.primedPickaxe());
+                RECIPES.put("Strengthened Sword", CustomItems.strengthenedSword());
+                RECIPES.put("Bolstered Bow", CustomItems.bolsteredBow());
+                RECIPES.put("Trident", new ItemStack(Material.TRIDENT));
+                RECIPES.put("Compact Anvil", CustomItems.compactAnvil());
+                RECIPES.put("Bundled Arrows", CustomItems.bundledArrows());
+                RECIPES.put("Golden Head", CustomItems.goldenHead());
+                RECIPES.put("Loyalty Book", CustomItems.loyaltyBook());
             }
 
     public static final ItemStack[] PRIMED_PICKAXE_INGREDIENTS = {

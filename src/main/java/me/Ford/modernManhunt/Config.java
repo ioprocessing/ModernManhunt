@@ -1,11 +1,14 @@
 package me.Ford.modernManhunt;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Config {
     private final static Config instance = new Config();
@@ -14,6 +17,7 @@ public class Config {
     private YamlConfiguration config;
     public static List<String> worldsList = new ArrayList<>();
     public static List<String> handicapList = new ArrayList<>();
+    public static Map<String, Boolean> recipeList = new HashMap<>();
 
     private Config() {
     }
@@ -34,6 +38,14 @@ public class Config {
         }
         worldsList = config.getStringList("Worlds");
         handicapList = config.getStringList("Handicap");
+
+        // Load custom recipes
+        ConfigurationSection recipeSection = config.getConfigurationSection("Custom Recipes");
+        if (recipeSection != null) {
+            for (String key : recipeSection.getKeys(false)) {
+                recipeList.put(key, recipeSection.getBoolean(key));
+            }
+        }
 
     }
 
@@ -72,6 +84,10 @@ public class Config {
             }
         }
         save();
+    }
+
+    public boolean isRecipeEnabled(String recipeName) {
+        return recipeList.getOrDefault(recipeName, false);
     }
 
     public static Config getInstance() {

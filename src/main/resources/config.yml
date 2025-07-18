@@ -2,3 +2,13 @@
 Worlds: []
 # List of players to give the handicap TP star
 Handicap: []
+# List of custom recipes to enable/disable'
+Custom Recipes:
+  Primed Pickaxe: true
+  Strengthened Sword: true
+  Bolstered Bow: true
+  Trident: true
+  Compact Anvil: true
+  Bundled Arrows: true
+  Golden Head: true
+  Loyalty Book: true

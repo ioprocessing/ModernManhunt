@@ -1,5 +1,6 @@
 package me.Ford.modernManhunt.CustomItems;
 
+import me.Ford.modernManhunt.Config;
 import me.Ford.modernManhunt.Keys;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,6 +11,8 @@ import org.bukkit.inventory.ShapelessRecipe;
 public final class CustomRecipes {
 
     public static void register() {
+
+        Config.getInstance().load();
 
         /// GOLDEN HEAD ///
 
@@ -31,7 +34,8 @@ public final class CustomRecipes {
         if (Bukkit.getRecipe(Keys.GOLDEN_HEAD_RECIPE) != null) {
             Bukkit.removeRecipe(Keys.GOLDEN_HEAD_RECIPE);
         }
-        Bukkit.addRecipe(gHeadRecipe);
+        if (Config.getInstance().isRecipeEnabled("Golden Head"))
+            Bukkit.addRecipe(gHeadRecipe);
 
         /// FIERY PICKAXE ///
 
@@ -54,7 +58,8 @@ public final class CustomRecipes {
         if (Bukkit.getRecipe(Keys.PRIMED_PICK_RECIPE) != null) {
             Bukkit.removeRecipe(Keys.PRIMED_PICK_RECIPE);
         }
-        Bukkit.addRecipe(pPickRecipe);
+        if (Config.getInstance().isRecipeEnabled("Primed Pickaxe"))
+            Bukkit.addRecipe(pPickRecipe);
 
         /// STRENGTHENED SWORD ///
 
@@ -76,7 +81,9 @@ public final class CustomRecipes {
         if (Bukkit.getRecipe(Keys.STRENGTH_SWORD_RECIPE) != null) {
             Bukkit.removeRecipe(Keys.STRENGTH_SWORD_RECIPE);
         }
-        Bukkit.addRecipe(sSwordRecipe);
+
+        if (Config.getInstance().isRecipeEnabled("Strengthened Sword"))
+            Bukkit.addRecipe(sSwordRecipe);
 
         /// Bolstered Bow ///
 
@@ -98,7 +105,9 @@ public final class CustomRecipes {
         if (Bukkit.getRecipe(Keys.BOLSTER_BOW_RECIPE) != null) {
             Bukkit.removeRecipe(Keys.BOLSTER_BOW_RECIPE);
         }
-        Bukkit.addRecipe(bBowRecipe);
+
+        if (Config.getInstance().isRecipeEnabled("Bolstered Bow"))
+            Bukkit.addRecipe(bBowRecipe);
 
         /// Bundled Arrows ///
 
@@ -123,7 +132,9 @@ public final class CustomRecipes {
         if (Bukkit.getRecipe(Keys.BUNDLED_ARROWS_RECIPE) != null) {
             Bukkit.removeRecipe(Keys.BUNDLED_ARROWS_RECIPE);
         }
-        Bukkit.addRecipe(bArrowsRecipe);
+
+        if (Config.getInstance().isRecipeEnabled("Bundled Arrows"))
+            Bukkit.addRecipe(bArrowsRecipe);
 
         /// Compact Anvil ///
 
@@ -146,7 +157,9 @@ public final class CustomRecipes {
         if (Bukkit.getRecipe(Keys.COMPACT_ANVIL_RECIPE) != null) {
             Bukkit.removeRecipe(Keys.COMPACT_ANVIL_RECIPE);
         }
-        Bukkit.addRecipe(cAnvilRecipe);
+
+        if (Config.getInstance().isRecipeEnabled("Compact Anvil"))
+            Bukkit.addRecipe(cAnvilRecipe);
 
         /// Trident ///
 
@@ -169,7 +182,9 @@ public final class CustomRecipes {
         if (Bukkit.getRecipe(Keys.TRIDENT_RECIPE) != null) {
             Bukkit.removeRecipe(Keys.TRIDENT_RECIPE);
         }
-        Bukkit.addRecipe(tridentRecipe);
+
+        if (Config.getInstance().isRecipeEnabled("Trident"))
+            Bukkit.addRecipe(tridentRecipe);
 
         /// Loyalty ///
 
@@ -188,7 +203,9 @@ public final class CustomRecipes {
         if (Bukkit.getRecipe(Keys.LOYALTY_RECIPE) != null) {
             Bukkit.removeRecipe(Keys.LOYALTY_RECIPE);
         }
-        Bukkit.addRecipe(loyaltyRecipe);
+
+        if (Config.getInstance().isRecipeEnabled("Loyalty Book"))
+            Bukkit.addRecipe(loyaltyRecipe);
 
     }
 

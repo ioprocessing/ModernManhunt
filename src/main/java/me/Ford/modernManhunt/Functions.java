@@ -1,7 +1,6 @@
 package me.Ford.modernManhunt;
 
 import me.Ford.modernManhunt.Commands.ManhuntCommand;
-import me.Ford.modernManhunt.CustomItems.CustomItems;
 import me.Ford.modernManhunt.Records.BarteringDrops;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -40,16 +39,20 @@ public class Functions {
     }
 
     public static void openRecipesMenu(Player p) {
-        Inventory i = Bukkit.createInventory(p, 9, Component.text("Recipes"));
 
-        i.setItem(0, CustomItems.primedPickaxe());
-        i.setItem(1, CustomItems.strengthenedSword());
-        i.setItem(2, CustomItems.bolsteredBow());
-        i.setItem(3, new ItemStack(Material.TRIDENT));
-        i.setItem(4, CustomItems.compactAnvil());
-        i.setItem(5, CustomItems.bundledArrows());
-        i.setItem(6, CustomItems.goldenHead());
-        i.setItem(7, CustomItems.loyaltyBook());
+        List<String> recipes = List.of("Primed Pickaxe", "Strengthened Sword", "Bolstered Bow", "Trident", "Compact Anvil", "Bundled Arrows", "Golden Head", "Loyalty Book");
+
+        Inventory i = Bukkit.createInventory(p, 9, Component.text("Recipes"));
+        int j = 0;
+
+        for (String recipe : recipes) {
+            // If the value in the config reads 'true',
+            if (Config.getInstance().isRecipeEnabled(recipe)) {
+                // Set the indexed slot to that item slot and increment
+                i.setItem(j, Collections.RECIPES.get(recipe));
+             j++;
+            }
+        }
 
         p.openInventory(i);
         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(),  "Recipes Menu"));
