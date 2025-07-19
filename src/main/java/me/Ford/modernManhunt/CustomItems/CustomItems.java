@@ -361,7 +361,7 @@ public class CustomItems {
         else
             potion_name = Component.text("Potion of Fire Resistance",  NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false);
         meta.addCustomEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 3600, 0), true);
-        meta.setColor(Color.fromRGB(228, 154, 58));
+        meta.setColor(Color.fromRGB(255, 153, 0));
         meta.customName(potion_name);
         potion.setItemMeta(meta);
         return potion;
