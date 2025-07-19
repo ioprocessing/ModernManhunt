@@ -35,6 +35,8 @@ import java.util.Random;
 
 public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
+    ///  TODO: MAKE THIS CLASS READABLE
+    ///
     public static Team mmRunners = Functions.board.registerNewTeam("mmRunners");
     public static Team mmHunters = Functions.board.registerNewTeam("mmHunters");
     public static ArrayList<Player> runnerArray = new ArrayList<>();
@@ -49,7 +51,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        if ((args.length > 3) || (args.length == 0))
+        if ((args.length > 3 && (!args[0].equalsIgnoreCase("handicap"))) || (args.length == 0))
             return false;
 
         Player s = (Player) sender;
@@ -172,7 +174,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         Functions.resetPlayer(name);
                         Player p = Bukkit.getPlayer(name);
                         // If the player is on the handicap list, give them the TP star
-                        if (Config.handicapList.contains(p.getName()))
+                        if (Config.handicapTPList.contains(p.getName()))
                             p.getInventory().setItem(7, CustomItems.tpStar());
                         p.setMetadata("TargetedPlayer", new FixedMetadataValue(ModernManhunt.getInstance(), 0));
                         Title title = Title.title(mainTitle, Component.empty(), times);
@@ -328,7 +330,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                 s.sendMessage(Component.text("§6> §a/recipes" +
                         "\n§6> §a/mm [runner/hunter] [add/remove] <player name>" +
                         "\n§6> §a/mm [runner/hunter] list" +
-                        "\n§6> §a/mm handicap [add/remove] <hunter name>" +
+                        "\n§6> §a/mm handicap [add/remove] <hunter name> [tp/armor]" +
                         "\n§6> §a/mm handicap list" +
                         "\n§6> §a/mm world [create/delete/tp/unload] <world name>" +
                         "\n§6> §a/mm world list" +
@@ -342,32 +344,50 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
             case "handicap" -> {
                 if (
                         ((args.length == 1) || ((args.length == 2) && !(args[1].equalsIgnoreCase("list"))))
-                                || ((args.length == 3) && (Bukkit.getPlayer(args[2].toLowerCase()) == null))
+                                || args.length == 3 || ((args.length == 4) && (Bukkit.getPlayer(args[2].toLowerCase()) == null) || args.length > 4)
                 )
                     return false;
                 switch (args[1].toLowerCase()) {
                     case "add" -> {
                         String p =  args[2];
-                        if (!(Config.handicapList.contains(p))) {
-                            Config.getInstance().add(p, "handicap");
-                            s.sendMessage("§aSuccessfully added that player to the handicap list!");
-                        }
-                        else s.sendMessage("§cThat player is already on the handicap list!");
+                        if (args[3].equalsIgnoreCase("tp")) {
+                            if (!(Config.handicapTPList.contains(p))) {
+                                Config.getInstance().add(p, "handicapTP");
+                                s.sendMessage("§aSuccessfully added that player to the TP handicap list!");
+                            } else s.sendMessage("§cThat player is already on the TP handicap list!");
+                        } else if (args[3].equalsIgnoreCase("armor")) {
+                            if (!(Config.handicapArmorList.contains(p))) {
+                                Config.getInstance().add(p, "handicapArmor");
+                                s.sendMessage("§aSuccessfully added that player to the armor handicap list!");
+                            } else s.sendMessage("§cThat player is already on the armor handicap list!");
+                        } else return false;
                     }
                     case "remove" -> {
                         String p =  args[2];
-                        if (Config.handicapList.contains(p)) {
-                            Config.getInstance().remove(p, "handicap");
-                            s.sendMessage("§aSuccessfully removed that player from the handicap list!");
-                        }
-                        else s.sendMessage("§cThat player isn't on the handicap list!");
+                        if (args[3].equalsIgnoreCase("tp")) {
+                            if (Config.handicapTPList.contains(p)) {
+                                Config.getInstance().remove(p, "handicapTP");
+                                s.sendMessage("§aSuccessfully removed that player from the TP handicap list!");
+                            } else s.sendMessage("§cThat player isn't on the TP handicap list!");
+                        } else if (args[3].equalsIgnoreCase("armor")) {
+                            if (Config.handicapArmorList.contains(p)) {
+                                Config.getInstance().remove(p, "handicapArmor");
+                                s.sendMessage("§aSuccessfully removed that player from the armor handicap list!");
+                            } else s.sendMessage("§cThat player isn't on the armor handicap list!");
+                        } else return false;
                     }
                     case "list" -> {
-                        if (Config.handicapList.isEmpty())
+                        if (Config.handicapTPList.isEmpty() && Config.handicapArmorList.isEmpty())
                             s.sendRawMessage("§cThere are no players on the handicap list!");
                         else {
-                            String playerList = String.join(", ", Config.handicapList);
-                            s.sendRawMessage("§aHandicapped players: " + playerList);
+                            if (!Config.handicapTPList.isEmpty()) {
+                                String playerTPList = String.join(", ", Config.handicapTPList);
+                                s.sendRawMessage("§aTP Handicap players: " + playerTPList);
+                            }
+                            if (!Config.handicapArmorList.isEmpty()) {
+                                String playerArmorList = String.join(", ", Config.handicapArmorList);
+                                s.sendRawMessage("§aArmor Handicap players: " + playerArmorList);
+                            }
                         }
                     }
                     default -> {
@@ -424,6 +444,11 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                             worlds.add(world.getName());
                     }
                     return worlds;
+                }
+            }
+            case 4 -> {
+                if (args[0].equalsIgnoreCase("handicap") && (args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("remove"))) {
+                    return Arrays.asList("tp", "armor");
                 }
             }
         }

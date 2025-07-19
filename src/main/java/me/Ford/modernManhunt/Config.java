@@ -16,7 +16,8 @@ public class Config {
     private File file;
     private YamlConfiguration config;
     public static List<String> worldsList = new ArrayList<>();
-    public static List<String> handicapList = new ArrayList<>();
+    public static List<String> handicapTPList = new ArrayList<>();
+    public static List<String> handicapArmorList = new ArrayList<>();
     public static Map<String, Boolean> recipeList = new HashMap<>();
 
     private Config() {
@@ -37,7 +38,8 @@ public class Config {
             e.printStackTrace();
         }
         worldsList = config.getStringList("Worlds");
-        handicapList = config.getStringList("Handicap");
+        handicapTPList = config.getStringList("HandicapTP");
+        handicapArmorList = config.getStringList("HandicapArmor");
 
         // Load custom recipes
         ConfigurationSection recipeSection = config.getConfigurationSection("Custom Recipes");
@@ -64,9 +66,13 @@ public class Config {
                 worldsList.add(value);
                 config.set("Worlds", worldsList);
             }
-            case "handicap" -> {
-                handicapList.add(value);
-                config.set("Handicap",  handicapList);
+            case "handicapTP" -> {
+                handicapTPList.add(value);
+                config.set("HandicapTP", handicapTPList);
+            }
+            case "handicapArmor" -> {
+                handicapArmorList.add(value);
+                config.set("HandicapArmor", handicapArmorList);
             }
         }
         save();
@@ -78,9 +84,13 @@ public class Config {
                 worldsList.remove(value);
                 config.set("Worlds", worldsList);
             }
-            case "handicap" -> {
-                handicapList.remove(value);
-                config.set("Handicap",  handicapList);
+            case "handicapTP" -> {
+                handicapTPList.remove(value);
+                config.set("HandicapTP", handicapTPList);
+            }
+            case "handicapArmor" -> {
+                handicapArmorList.remove(value);
+                config.set("HandicapArmor", handicapArmorList);
             }
         }
         save();

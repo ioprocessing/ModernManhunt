@@ -71,7 +71,6 @@ public final class ModernManhunt extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DeathMessageListener(), instance);
         getServer().getPluginManager().registerEvents(new DimensionTravelListener(), instance);
         getServer().getPluginManager().registerEvents(new HunterListener(), instance);
-        getServer().getPluginManager().registerEvents(new RespawnEffectListener(), instance);
         getServer().getPluginManager().registerEvents(new RespawnLocationListener(), instance);
         getServer().getPluginManager().registerEvents(new RunnerListener(), instance);
         getServer().getPluginManager().registerEvents(new SpectatorInteractionListener(), instance);

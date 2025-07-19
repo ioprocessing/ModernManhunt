@@ -3,6 +3,7 @@ package me.Ford.modernManhunt.PlayerListeners;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.LodestoneTracker;
 import me.Ford.modernManhunt.Commands.ManhuntCommand;
+import me.Ford.modernManhunt.Config;
 import me.Ford.modernManhunt.CustomItems.CustomItems;
 import me.Ford.modernManhunt.Functions;
 import me.Ford.modernManhunt.GUI.TeleporterGUI;
@@ -17,23 +18,40 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class HunterListener implements Listener {
+
+    Map<UUID, ItemStack[]> respawnArmor = new HashMap<>();
+
     @EventHandler
     public void onHunterDeath(PlayerDeathEvent e) {
         Player p = e.getEntity();
-        if (p.getKiller() != null) {
-            // If a hunter kills a hunter, prevent a head from dropping
-            if (!(ManhuntCommand.hunterArray.contains(p.getKiller()) && ManhuntCommand.hunterArray.contains(p)))
-                e.getDrops().add(CustomItems.consumablePlayerHead(p));
+        if (ManhuntCommand.hunterArray.contains(p)) {
+            if (p.getKiller() != null) {
+                // If a hunter kills a hunter, prevent a head from dropping
+                if (!(ManhuntCommand.hunterArray.contains(p.getKiller()) && ManhuntCommand.hunterArray.contains(p)))
+                    e.getDrops().add(CustomItems.consumablePlayerHead(p));
+            }
+            // If they're on the handicap armor list,
+            if (Config.handicapArmorList.contains(p.getName())) {
+                // Get all their drops and remove all the armor pieces they're wearing
+                ItemStack[] armor = p.getInventory().getArmorContents();
+                for (ItemStack armorPiece : armor) {
+                    e.getDrops().remove(armorPiece);
+                }
+                // Add all armor pieces to map with the player ID
+                respawnArmor.put(p.getUniqueId(), armor.clone());
+            }
         }
     }
+
 
     @EventHandler
     public void onTPStar(PlayerInteractEvent e) {
@@ -111,6 +129,34 @@ public class HunterListener implements Listener {
                     }
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onHunterRespawn(PlayerRespawnEvent e) {
+        Player p =  e.getPlayer();
+        // If the player is a handicapped runner, give them the TP star
+        if (Config.handicapTPList.contains(p.getName()) && ManhuntCommand.hunterArray.contains(p))
+            p.getInventory().setItem(7, CustomItems.tpStar());
+
+        boolean aliveRunner = false;
+        // If any of the players marked as runners are alive, give the respawning hunter a compass (hunt is still on)
+        for (Player runner : ManhuntCommand.runnerArray) {
+            if (runner.hasMetadata("BeingHunted"))
+                aliveRunner = true;
+        }
+        if (ManhuntCommand.mmHunters.getEntries().contains(e.getPlayer().getName()) && aliveRunner) {
+            List<MetadataValue> metadata = p.getMetadata("TargetedPlayer");
+            int index = metadata.getFirst().asInt();
+            ItemStack compass = CustomItems.hunterCompass(p);
+            LodestoneTracker loc = LodestoneTracker.lodestoneTracker(ManhuntCommand.runnerArray.get(index).getLocation(), false);
+            compass.setData(DataComponentTypes.LODESTONE_TRACKER, loc);
+            p.getInventory().setItem(8, compass);
+        }
+        // If the player is marked to get respawn armor,
+        ItemStack[] armor = respawnArmor.remove(p.getUniqueId());
+        if (armor != null) {
+            p.getInventory().setArmorContents(armor);
         }
     }
 }

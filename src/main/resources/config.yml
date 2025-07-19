@@ -1,7 +1,9 @@
 # List of worlds to load onEnable()
 Worlds: []
 # List of players to give the handicap TP star
-Handicap: []
+HandicapTP: []
+# List of players to keep armor on death
+HandicapArmor: []
 # List of custom recipes to enable/disable
 Custom Recipes:
   Primed Pickaxe: true
