@@ -21,10 +21,10 @@ public class StrengthListener implements Listener {
             for(PotionEffect effect : effects) {
                 if(effect.getType() == PotionEffectType.STRENGTH) {
                     if(effect.getAmplifier() == 0) {
-                        // Add 1 flat damage, multiplied by the cooldown of their attack
-                        damage = damage + (1 * p.getAttackCooldown());
+                        // Remove 2 flat damage, multiplied by the cooldown of their attack
+                        damage = damage - (2 * p.getAttackCooldown());
                     } else if (effect.getAmplifier() == 1) {
-                        damage = damage + (2 * p.getAttackCooldown());
+                        damage = damage - (4 * p.getAttackCooldown());
                     }
                 }
             }

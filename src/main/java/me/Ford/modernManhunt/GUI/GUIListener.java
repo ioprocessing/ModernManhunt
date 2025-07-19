@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
@@ -30,7 +31,10 @@ public class GUIListener implements Listener {
                 // Null check so we can get item type
                 if (e.getCurrentItem() == null)
                     return;
-
+                if (e.getSlot() >= 9 || !(e.getClickedInventory().getType() == InventoryType.CHEST)){
+                    return;
+                }
+                System.out.println(e.getClickedInventory().getType());
                 switch (e.getCurrentItem().getType()) {
                     case Material.IRON_PICKAXE -> {
                         p.openInventory(RecipeFunctions.primedPickaxeRecipe(p));
