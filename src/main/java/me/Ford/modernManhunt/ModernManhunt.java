@@ -18,6 +18,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
@@ -28,7 +29,7 @@ import java.util.Objects;
 
 public final class ModernManhunt extends JavaPlugin {
 
-    private void unregisterCommands() {
+    public void unregisterCommands() {
         try {
             Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             commandMapField.setAccessible(true);
@@ -59,26 +60,30 @@ public final class ModernManhunt extends JavaPlugin {
         }
     }
 
+    public void register(Plugin instance) {
+        CustomRecipes.register();
+        getServer().getPluginManager().registerEvents(new HeadListener(), instance);
+        getServer().getPluginManager().registerEvents(new PrimedPickaxeListener(), instance);
+        getServer().getPluginManager().registerEvents(new SafetyListener(), instance);
+        getServer().getPluginManager().registerEvents(new GUIListener(), instance);
+        getServer().getPluginManager().registerEvents(new EntityListener(), instance);
+        getServer().getPluginManager().registerEvents(new BedBombingListener(), instance);
+        getServer().getPluginManager().registerEvents(new DeathMessageListener(), instance);
+        getServer().getPluginManager().registerEvents(new DimensionTravelListener(), instance);
+        getServer().getPluginManager().registerEvents(new HunterListener(), instance);
+        getServer().getPluginManager().registerEvents(new RespawnEffectListener(), instance);
+        getServer().getPluginManager().registerEvents(new RespawnLocationListener(), instance);
+        getServer().getPluginManager().registerEvents(new RunnerListener(), instance);
+        getServer().getPluginManager().registerEvents(new SpectatorInteractionListener(), instance);
+        getServer().getPluginManager().registerEvents(new StrengthListener(), instance);
+        Config.getInstance().load();
+    }
+
     @Override
     public void onEnable() {
-        CustomRecipes.register();
-        getServer().getPluginManager().registerEvents(new HeadListener(), this);
-        getServer().getPluginManager().registerEvents(new PrimedPickaxeListener(), this);
-        getServer().getPluginManager().registerEvents(new SafetyListener(), this);
-        getServer().getPluginManager().registerEvents(new GUIListener(), this);
-        getServer().getPluginManager().registerEvents(new EntityListener(), this);
-        getServer().getPluginManager().registerEvents(new BedBombingListener(), this);
-        getServer().getPluginManager().registerEvents(new DeathMessageListener(), this);
-        getServer().getPluginManager().registerEvents(new DimensionTravelListener(), this);
-        getServer().getPluginManager().registerEvents(new HunterListener(), this);
-        getServer().getPluginManager().registerEvents(new RespawnEffectListener(), this);
-        getServer().getPluginManager().registerEvents(new RespawnLocationListener(), this);
-        getServer().getPluginManager().registerEvents(new RunnerListener(), this);
-        getServer().getPluginManager().registerEvents(new SpectatorInteractionListener(), this);
-        getServer().getPluginManager().registerEvents(new StrengthListener(), this);
+        register(this);
         Objects.requireNonNull(getCommand("recipes")).setExecutor(new RecipesCommand());
         Objects.requireNonNull(getCommand("manhunt")).setExecutor(new ManhuntCommand());
-        Config.getInstance().load();
         for (String worldName : Config.worldsList) {
             World.Environment env = World.Environment.NORMAL;
             if (worldName.endsWith("_nether")) {env = World.Environment.NETHER;}

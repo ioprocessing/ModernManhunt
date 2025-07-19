@@ -2,7 +2,7 @@
 Worlds: []
 # List of players to give the handicap TP star
 Handicap: []
-# List of custom recipes to enable/disable'
+# List of custom recipes to enable/disable
 Custom Recipes:
   Primed Pickaxe: true
   Strengthened Sword: true

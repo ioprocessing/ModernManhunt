@@ -17,6 +17,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scoreboard.Team;
@@ -333,7 +334,8 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         "\n§6> §a/mm world list" +
                         "\n§6> §a/mm start" +
                         "\n§6> §a/mm stop" +
-                        "\n§6> §a/mm help"));
+                        "\n§6> §a/mm help" +
+                        "\n§6> §a/mm reload"));
 
             ///  HANDICAP ARGS ///
 
@@ -374,6 +376,14 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                 }
             }
 
+            ///  RELOAD ARGS ///
+
+            case "reload" -> {
+                HandlerList.unregisterAll(ModernManhunt.getInstance());
+                ModernManhunt.getInstance().register(ModernManhunt.getInstance());
+                s.sendRawMessage("§aReloaded ModernManhunt!");
+            }
+
             default -> {
                 return false;
             }
@@ -386,7 +396,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
         switch (args.length) {
             case 1 -> {
-                return Arrays.asList("runner", "hunter", "stop", "start", "world", "help", "handicap");
+                return Arrays.asList("runner", "hunter", "stop", "start", "world", "help", "handicap", "reload");
             }
             case 2 -> {
                 if (args[0].equalsIgnoreCase("runner") ||  args[0].equalsIgnoreCase("hunter") || args[0].equalsIgnoreCase("handicap")) {
