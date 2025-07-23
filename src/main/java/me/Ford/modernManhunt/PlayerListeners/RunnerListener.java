@@ -20,6 +20,9 @@ public class RunnerListener implements Listener {
     @EventHandler
     public void onRunnerDeath(PlayerDeathEvent e) {
         Player p = e.getEntity();
+        if (!ManhuntCommand.runnerArray.contains(p))
+            return;
+        e.getDrops().add(CustomItems.consumablePlayerHead(p));
         if (p.hasMetadata("BeingHunted")) {
             boolean aliveRunner = false;
             p.removeMetadata("BeingHunted", ModernManhunt.getInstance());
