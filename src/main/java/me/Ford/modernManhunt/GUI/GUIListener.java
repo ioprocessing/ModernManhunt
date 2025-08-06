@@ -2,6 +2,7 @@ package me.Ford.modernManhunt.GUI;
 
 import me.Ford.modernManhunt.CustomItems.RecipeFunctions;
 import me.Ford.modernManhunt.Functions;
+import me.Ford.modernManhunt.Keys;
 import me.Ford.modernManhunt.ModernManhunt;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,7 +26,7 @@ public class GUIListener implements Listener {
 
         if (p.hasMetadata("OpenedRecipesMenu")) {
             List<MetadataValue> metadata = p.getMetadata("OpenedRecipesMenu");
-            if (!metadata.isEmpty() && metadata.getFirst().asString().equals("Recipes Menu")) {
+            if (!metadata.isEmpty() && p.hasMetadata("OpenedRecipesMenu")) {
                 e.setCancelled(true);
 
                 // Null check so we can get item type
@@ -34,7 +35,6 @@ public class GUIListener implements Listener {
                 if (e.getSlot() >= 9 || !(e.getClickedInventory().getType() == InventoryType.CHEST)){
                     return;
                 }
-                System.out.println(e.getClickedInventory().getType());
                 switch (e.getCurrentItem().getType()) {
                     case Material.IRON_PICKAXE -> {
                         p.openInventory(RecipeFunctions.primedPickaxeRecipe(p));
@@ -68,15 +68,21 @@ public class GUIListener implements Listener {
                         p.openInventory(RecipeFunctions.loyaltyRecipe(p));
                         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Loyalty Book Recipe"));
                     }
+                    case Material.FILLED_MAP -> {
+                        p.openInventory(RecipeFunctions.trialMapRecipe(p));
+                        p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Trial Chambers Map Recipe"));
+                    }
                 }
             }
         } else if (p.hasMetadata("OpenedSpectatorMenu") || p.hasMetadata("OpenedTPMenu")) {
             e.setCancelled(true);
-        if (e.getCurrentItem() == null || !e.getCurrentItem().getType().equals(Material.PLAYER_HEAD))
+        if (e.getCurrentItem() == null || !e.getCurrentItem().getType().equals(Material.PLAYER_HEAD) || e.getClickedInventory().getType() == InventoryType.PLAYER)
                 return;
             SkullMeta meta = (SkullMeta) e.getCurrentItem().getItemMeta();
-            if (!(p.hasMetadata("OpenedTPMenu") && meta.getOwningPlayer().getPlayer().isDead()))
+            if (!(p.hasMetadata("OpenedTPMenu") && meta.getOwningPlayer().getPlayer().isDead())) {
                 p.teleport(meta.getOwningPlayer().getLocation());
+                p.setCooldown(Keys.TP_COOLDOWN, 1200);
+            }
             else {
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 0.9f);
                 p.sendMessage("§cThat player is currently respawning!");

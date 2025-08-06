@@ -207,6 +207,30 @@ public final class CustomRecipes {
         if (Config.getInstance().isRecipeEnabled("Loyalty Book"))
             Bukkit.addRecipe(loyaltyRecipe);
 
+        ///  Trial Chambers Map ///
+
+        ItemStack dummyMap = CustomItems.dummyTrialMap();
+
+        // Outline the recipe shape
+        ShapedRecipe trialMapRecipe = new ShapedRecipe(Keys.TRIAL_MAP_RECIPE, dummyMap);
+        trialMapRecipe.shape(
+                " C ",
+                "COC",
+                " C "
+        );
+
+        // Now just substitute the ingredients
+        trialMapRecipe.setIngredient('C', Material.COPPER_BLOCK);
+        trialMapRecipe.setIngredient('O', Material.COMPASS);
+
+        // Don't duplicate recipe
+        if (Bukkit.getRecipe(Keys.TRIAL_MAP_RECIPE) != null) {
+            Bukkit.removeRecipe(Keys.TRIAL_MAP_RECIPE);
+        }
+
+        if (Config.getInstance().isRecipeEnabled("Trial Chambers Map"))
+            Bukkit.addRecipe(trialMapRecipe);
+
     }
 
 }

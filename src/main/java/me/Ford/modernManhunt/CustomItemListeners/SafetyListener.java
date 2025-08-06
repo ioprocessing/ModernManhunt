@@ -16,19 +16,19 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class SafetyListener implements Listener {
     @EventHandler
-    public void onPrepareCraft(PrepareItemCraftEvent event) {
-        if (event.getInventory().getResult() != null && event.getInventory().getResult().getItemMeta().getPersistentDataContainer().has(Keys.GOLDEN_HEAD, PersistentDataType.BOOLEAN)) {
-            if (!event.getInventory().getItem(5).getItemMeta().getPersistentDataContainer().has(Keys.CONSUMABLE_HEAD, PersistentDataType.BOOLEAN)) {
-                event.getInventory().setResult(null);
+    public void onPrepareCraft(PrepareItemCraftEvent e) {
+        if (e.getInventory().getResult() != null && e.getInventory().getResult().getItemMeta().getPersistentDataContainer().has(Keys.GOLDEN_HEAD, PersistentDataType.BOOLEAN)) {
+            if (!e.getInventory().getItem(5).getItemMeta().getPersistentDataContainer().has(Keys.CONSUMABLE_HEAD, PersistentDataType.BOOLEAN)) {
+                e.getInventory().setResult(null);
             }
         } else for (int i = 1; i < 10; i++) {
             // Check each item in the crafting menu
-            ItemStack item = event.getInventory().getItem(i);
+            ItemStack item = e.getInventory().getItem(i);
             if (item != null) {
                 PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
                 // If the item is a custom item and isn't a consumable head, cancel the crafting recipe
                 if (data.has(Keys.CUSTOM_ITEM, PersistentDataType.BOOLEAN) && !data.has(Keys.CONSUMABLE_HEAD, PersistentDataType.BOOLEAN))
-                    event.getInventory().setResult(null);
+                    e.getInventory().setResult(null);
             }
         }
     }

@@ -64,4 +64,11 @@ public class RecipeFunctions {
 
         return inventory;
     }
+
+    public static Inventory trialMapRecipe(Player p) {
+        Inventory inventory = Bukkit.createInventory(p, InventoryType.WORKBENCH, Component.text("Trial Chambers Map"));
+        inventory.setContents(Collections.TRIAL_MAP_INGREDIENTS);
+
+        return inventory;
+    }
 }

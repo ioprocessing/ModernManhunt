@@ -40,7 +40,7 @@ public class Functions {
 
     public static void openRecipesMenu(Player p) {
 
-        List<String> recipes = List.of("Primed Pickaxe", "Strengthened Sword", "Bolstered Bow", "Trident", "Compact Anvil", "Bundled Arrows", "Golden Head", "Loyalty Book");
+        List<String> recipes = List.of("Primed Pickaxe", "Strengthened Sword", "Bolstered Bow", "Trident", "Compact Anvil", "Bundled Arrows", "Golden Head", "Loyalty Book", "Trial Chambers Map");
 
         Inventory i = Bukkit.createInventory(p, 9, Component.text("Recipes"));
         int j = 0;
@@ -166,13 +166,14 @@ public class Functions {
         p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
         p.setFoodLevel(20);
         p.setSaturation(20.0f);
+        p.setGameMode(GameMode.SURVIVAL);
     }
 
     public static void consumeGoldenHead (Player p, ItemStack head) {
 
         // If item is on cooldown, do nothing
 
-        if (p.getCooldown(Keys.HEAD_GROUP) > 0) {
+        if (p.getCooldown(Keys.GOLDEN_HEAD_COOLDOWN) > 0) {
             return;
         }
 
@@ -180,11 +181,10 @@ public class Functions {
 
         // Then add the potion effects and cooldown
 
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 10, 0));
         p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 1));
-        p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 1));
-        p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 3));
-        p.setCooldown(Keys.HEAD_GROUP, 20);
+        p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 0));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 2));
+        p.setCooldown(Keys.GOLDEN_HEAD_COOLDOWN, 300);
 
         // Lower stack count
         Bukkit.getScheduler().runTask(ModernManhunt.getInstance(), () ->
@@ -195,7 +195,7 @@ public class Functions {
 
         // If item is on cooldown, do nothing
 
-        if (p.getCooldown(Keys.HEAD_GROUP) > 0) {
+        if (p.getCooldown(Keys.PLAYER_HEAD_COOLDOWN) > 0) {
             return;
         }
 
@@ -203,9 +203,9 @@ public class Functions {
 
         // Then add the potion effects and cooldown
 
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, 5, 0));
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1));
-        p.setCooldown(Keys.HEAD_GROUP, 20);
+        p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 0));
+        p.setCooldown(Keys.PLAYER_HEAD_COOLDOWN, 20);
 
         // Lower stack count
         Bukkit.getScheduler().runTask(ModernManhunt.getInstance(), () ->

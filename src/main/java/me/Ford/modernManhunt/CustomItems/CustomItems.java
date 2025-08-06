@@ -6,15 +6,19 @@ import me.Ford.modernManhunt.Keys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.structure.Structure;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.inventory.meta.components.UseCooldownComponent;
+import org.bukkit.map.MapCursor;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -34,9 +38,9 @@ public class CustomItems {
         meta.lore(Arrays.asList(
                 Component.text()
                         .append(Component.text("CONSUME").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text(" to gain Speed II (10s)").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text(" to gain Speed I (15s)").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                         .build(),
-                Component.text("and Saturation I (0.25s). Also").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                Component.text("and Regeneration II (5s). Also").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                 Component.text()
                         .append(Component.text("used to craft ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                         .append(Component.text("Golden Heads").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
@@ -52,7 +56,7 @@ public class CustomItems {
         meta.getPersistentDataContainer().set(Keys.CUSTOM_ITEM, PersistentDataType.BOOLEAN, true);
 
         UseCooldownComponent cd = meta.getUseCooldown();
-        cd.setCooldownGroup(Keys.HEAD_GROUP);
+        cd.setCooldownGroup(Keys.PLAYER_HEAD_COOLDOWN);
         meta.setUseCooldown(cd);
 
         // Set the item meta and add it to the loot dropped
@@ -71,10 +75,9 @@ public class CustomItems {
         meta.lore(Arrays.asList(
                 Component.text()
                         .append(Component.text("CONSUME").color(NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text(" to gain Saturation I (0.5s),").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text(" to gain Regeneration III (5s),").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                         .build(),
-                Component.text("Speed II (15s), Absorption II (120s),").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                Component.text("and Regeneration IV (5s).").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
+                Component.text("Speed II (15s), and Absorption I (120s).").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
 
         meta.customName(head_name);
         CustomModelDataComponent model = meta.getCustomModelDataComponent();
@@ -86,7 +89,7 @@ public class CustomItems {
         meta.getPersistentDataContainer().set(Keys.CUSTOM_ITEM, PersistentDataType.BOOLEAN, true);
 
         UseCooldownComponent cd = meta.getUseCooldown();
-        cd.setCooldownGroup(Keys.HEAD_GROUP);
+        cd.setCooldownGroup(Keys.GOLDEN_HEAD_COOLDOWN);
         meta.setUseCooldown(cd);
 
         // Set the item meta
@@ -225,9 +228,9 @@ public class CustomItems {
         meta.lore(Arrays.asList(
                 Component.text()
                         .append(Component.text("CONSUME").color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text(" to gain Speed II (10s)").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text(" to gain Speed I (15s)").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                         .build(),
-                Component.text("and Saturation I (0.5s). Also").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                Component.text("and Regeneration II (5s). Also").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                 Component.text()
                         .append(Component.text("used to craft ").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
                         .append(Component.text("Golden Heads").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
@@ -339,6 +342,11 @@ public class CustomItems {
         meta.getPersistentDataContainer().set(Keys.TP_STAR, PersistentDataType.BOOLEAN, true);
         meta.getPersistentDataContainer().set(Keys.CUSTOM_ITEM, PersistentDataType.BOOLEAN, true);
 
+        // Add teleporting cooldown
+        UseCooldownComponent cd = meta.getUseCooldown();
+        cd.setCooldownGroup(Keys.TP_COOLDOWN);
+        meta.setUseCooldown(cd);
+
         // Set the item meta
         tpStar.setItemMeta(meta);
         return tpStar;
@@ -365,5 +373,59 @@ public class CustomItems {
         meta.customName(potion_name);
         potion.setItemMeta(meta);
         return potion;
+    }
+
+    public static ItemStack dummyTrialMap() {
+        // Create map ItemStack
+        ItemStack trialMap = new ItemStack(Material.FILLED_MAP);
+
+        // Set dummy map details
+        MapMeta mapMeta = (MapMeta) trialMap.getItemMeta();
+        mapMeta.setColor(Color.fromRGB(206, 112, 43));
+        TextComponent map_name = Component.text("Trial Explorer Map", TextColor.color(206, 112, 43)).decoration(TextDecoration.ITALIC, false);
+        mapMeta.customName(map_name);
+
+        mapMeta.lore(Arrays.asList(
+                Component.text("A mysterious map that leads to trial chambers.").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                Component.text()
+                        .append(Component.text("USE", TextColor.color(206, 112, 43)).decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text( " to locate the nearest trial chambers.").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
+                        .build()));
+
+        // Add custom tag that we'll check for later
+        mapMeta.getPersistentDataContainer().set(Keys.DUMMY_MAP, PersistentDataType.BOOLEAN, true);
+        mapMeta.getPersistentDataContainer().set(Keys.CUSTOM_ITEM, PersistentDataType.BOOLEAN, true);
+
+        trialMap.setItemMeta(mapMeta);
+
+        return trialMap;
+    }
+
+    public static ItemStack trialChamberMap(Player p) {
+
+        // Create map ItemStack
+        ItemStack trialMap = Bukkit.createExplorerMap(p.getWorld(), p.getLocation(), Structure.TRIAL_CHAMBERS.getStructureType(), MapCursor.Type.TRIAL_CHAMBERS, 10000, false);
+        // If no trial chambers are located, check unexplored chunks
+        if (trialMap == null) {
+            trialMap = Bukkit.createExplorerMap(p.getWorld(), p.getLocation(), Structure.TRIAL_CHAMBERS.getStructureType(), MapCursor.Type.TRIAL_CHAMBERS, 10000, true);
+            // If still no results, give back the dummy map
+            if (trialMap == null)
+                return dummyTrialMap();
+        }
+
+        // Style the map like the dummy map
+        MapMeta meta = (MapMeta) trialMap.getItemMeta();
+        ItemMeta dummyMeta = dummyTrialMap().getItemMeta();
+        List<Component> dummyLore = dummyMeta.lore();
+        dummyLore.removeLast();
+        meta.lore(dummyLore);
+        meta.customName(dummyMeta.customName());
+
+        // Add custom tag that we'll check for later
+        meta.getPersistentDataContainer().set(Keys.CUSTOM_ITEM, PersistentDataType.BOOLEAN, true);
+
+        trialMap.setItemMeta(meta);
+
+        return trialMap;
     }
 }

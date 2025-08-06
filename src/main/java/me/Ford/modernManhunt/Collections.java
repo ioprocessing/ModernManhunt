@@ -49,6 +49,7 @@ public class Collections {
                 RECIPES.put("Bundled Arrows", CustomItems.bundledArrows());
                 RECIPES.put("Golden Head", CustomItems.goldenHead());
                 RECIPES.put("Loyalty Book", CustomItems.loyaltyBook());
+                RECIPES.put("Trial Chambers Map", CustomItems.dummyTrialMap());
             }
 
     public static final ItemStack[] PRIMED_PICKAXE_INGREDIENTS = {
@@ -141,6 +142,18 @@ public class Collections {
             new ItemStack(Material.BOOK),
             null,
             new ItemStack(Material.COMPASS)};
+
+    public static final ItemStack[] TRIAL_MAP_INGREDIENTS = {
+            CustomItems.dummyTrialMap(),
+            null,
+            new ItemStack(Material.COPPER_BLOCK),
+            null,
+            new ItemStack(Material.COPPER_BLOCK),
+            new ItemStack(Material.COMPASS),
+            new ItemStack(Material.COPPER_BLOCK),
+            null,
+            new ItemStack(Material.COPPER_BLOCK),
+            null};
 
     public static final List<BarteringDrops> CUSTOM_BARTER_POOL = List.of(
             new BarteringDrops(5, () -> {

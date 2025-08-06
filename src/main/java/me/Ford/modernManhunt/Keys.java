@@ -6,7 +6,8 @@ public class Keys {
     public static final NamespacedKey CUSTOM_ITEM = new NamespacedKey(ModernManhunt.getInstance(), "CustomItem");
     public static final NamespacedKey CONSUMABLE_HEAD = new NamespacedKey(ModernManhunt.getInstance(), "ConsumableHead");
     public static final NamespacedKey GOLDEN_HEAD = new NamespacedKey(ModernManhunt.getInstance(), "GoldenHead");
-    public static final NamespacedKey HEAD_GROUP = new NamespacedKey (ModernManhunt.getInstance(), "HeadGroup");
+    public static final NamespacedKey PLAYER_HEAD_COOLDOWN = new NamespacedKey (ModernManhunt.getInstance(), "PlayerHeadCooldown");
+    public static final NamespacedKey GOLDEN_HEAD_COOLDOWN = new NamespacedKey (ModernManhunt.getInstance(), "GoldenHeadCooldown");
     public static final NamespacedKey GOLDEN_HEAD_RECIPE = new NamespacedKey (ModernManhunt.getInstance(), "GHeadRecipe");
     public static final NamespacedKey PRIMED_PICK = new NamespacedKey (ModernManhunt.getInstance(), "FieryPick");
     public static final NamespacedKey PRIMED_PICK_RECIPE = new NamespacedKey (ModernManhunt.getInstance(), "FieryPickRecipe");
@@ -22,4 +23,7 @@ public class Keys {
     public static final NamespacedKey SPECTATOR_COMPASS = new NamespacedKey (ModernManhunt.getInstance(), "SpectatorCompass");
     public static final NamespacedKey TP_STAR = new NamespacedKey (ModernManhunt.getInstance(), "TPStar");
     public static final NamespacedKey LOYALTY_RECIPE = new NamespacedKey (ModernManhunt.getInstance(), "LoyaltyRecipe");
+    public static final NamespacedKey TP_COOLDOWN = new NamespacedKey (ModernManhunt.getInstance(), "TPCooldown");
+    public static final NamespacedKey TRIAL_MAP_RECIPE = new NamespacedKey (ModernManhunt.getInstance(), "TrialMapRecipe");
+    public static final NamespacedKey DUMMY_MAP = new NamespacedKey (ModernManhunt.getInstance(), "TrialMapRecipe");
 }

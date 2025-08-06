@@ -202,6 +202,13 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         Title title = Title.title(mainTitle, runSubtitle, times);
                         p.showTitle(title);
 
+                        p.setMetadata("PVPImmune", new FixedMetadataValue(ModernManhunt.getInstance(), true));
+
+                        Bukkit.getScheduler().runTaskLater(ModernManhunt.getInstance(), () -> {
+                            if (p.hasMetadata("PVPImmune"))
+                                p.removeMetadata("PVPImmune", ModernManhunt.getInstance());
+                        }, 20);
+
                         if (p.getRespawnLocation() == null || (p.getRespawnLocation().getWorld() != p.getLocation().getWorld()))
                             p.setRespawnLocation(p.getWorld().getSpawnLocation());
                     }

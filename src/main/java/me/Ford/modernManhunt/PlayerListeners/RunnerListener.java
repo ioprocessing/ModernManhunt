@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -56,5 +57,20 @@ public class RunnerListener implements Listener {
             }, 1L);
             p.give(CustomItems.spectatorCompass());
         }
+    }
+
+    @EventHandler
+    public void onRunnerHit(EntityDamageByEntityEvent e) {
+        if (!(e.getEntity() instanceof Player victim) || !(e.getDamager() instanceof Player attacker))
+            return;
+        if (!(victim.hasMetadata("PVPImmune") || attacker.hasMetadata("PVPImmune")))
+            return;
+        // If the runner is hitting someone while immune, remove their immunity
+        if (attacker.hasMetadata("PVPImmune")) {
+            attacker.removeMetadata("PVPImmune", ModernManhunt.getInstance());
+            return;
+        }
+        // If someone else is hitting the runner while immune, cancel the damage
+        e.setCancelled(true);
     }
 }
