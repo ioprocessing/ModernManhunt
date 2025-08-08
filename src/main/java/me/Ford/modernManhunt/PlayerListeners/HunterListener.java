@@ -56,8 +56,11 @@ public class HunterListener implements Listener {
     @EventHandler
     public void onTPStar(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        // If they right-click with the TP star, open the handicap TP menu
+        // If they right-click with the TP star, and it isn't on cooldown, open the handicap TP menu
         if (e.getItem() != null && e.getAction().isRightClick() && e.getItem().getItemMeta().getPersistentDataContainer().has(Keys.TP_STAR)) {
+            if (p.getCooldown(Keys.TP_COOLDOWN) > 0) {
+                return;
+            }
             e.setCancelled(true);
             TeleporterGUI.openHandicapTPGUI(p);
         }

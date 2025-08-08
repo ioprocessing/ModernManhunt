@@ -18,6 +18,7 @@ public class Config {
     public static List<String> worldsList = new ArrayList<>();
     public static List<String> handicapTPList = new ArrayList<>();
     public static List<String> handicapArmorList = new ArrayList<>();
+    public static Map<String, Integer> cooldownList = new HashMap<>();
     public static Map<String, Boolean> recipeList = new HashMap<>();
 
     private Config() {
@@ -40,6 +41,13 @@ public class Config {
         worldsList = config.getStringList("Worlds");
         handicapTPList = config.getStringList("HandicapTP");
         handicapArmorList = config.getStringList("HandicapArmor");
+
+        // Load cooldown durations
+        ConfigurationSection cooldownSection = config.getConfigurationSection("Cooldowns");
+        if (cooldownSection != null) {
+            for (String key : cooldownSection.getKeys(false))
+                cooldownList.put(key, cooldownSection.getInt(key));
+        }
 
         // Load custom recipes
         ConfigurationSection recipeSection = config.getConfigurationSection("Custom Recipes");
@@ -98,6 +106,10 @@ public class Config {
 
     public boolean isRecipeEnabled(String recipeName) {
         return recipeList.getOrDefault(recipeName, false);
+    }
+
+    public int itemCooldown(String itemName) {
+        return cooldownList.getOrDefault(itemName, 0);
     }
 
     public static Config getInstance() {

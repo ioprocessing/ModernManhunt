@@ -214,14 +214,15 @@ public final class CustomRecipes {
         // Outline the recipe shape
         ShapedRecipe trialMapRecipe = new ShapedRecipe(Keys.TRIAL_MAP_RECIPE, dummyMap);
         trialMapRecipe.shape(
-                " C ",
+                "PCP",
                 "COC",
-                " C "
+                "PCP"
         );
 
         // Now just substitute the ingredients
         trialMapRecipe.setIngredient('C', Material.COPPER_BLOCK);
         trialMapRecipe.setIngredient('O', Material.COMPASS);
+        trialMapRecipe.setIngredient('O', Material.PAPER);
 
         // Don't duplicate recipe
         if (Bukkit.getRecipe(Keys.TRIAL_MAP_RECIPE) != null) {
@@ -231,6 +232,26 @@ public final class CustomRecipes {
         if (Config.getInstance().isRecipeEnabled("Trial Chambers Map"))
             Bukkit.addRecipe(trialMapRecipe);
 
+        ///  Ominous Bottle ///
+
+        ItemStack ominousBottle = CustomItems.ominousBottle(0);
+
+        // Outline the recipe shape
+        ShapelessRecipe ominousBottleRecipe = new ShapelessRecipe(Keys.OMINOUS_BOTTLE_RECIPE, ominousBottle);
+
+        // Now just substitute the ingredients
+        ominousBottleRecipe.addIngredient(1, CustomItems.waterBottle());
+        ominousBottleRecipe.addIngredient(1, Material.FERMENTED_SPIDER_EYE);
+        ominousBottleRecipe.addIngredient(1, Material.ROTTEN_FLESH);
+        ominousBottleRecipe.addIngredient(1, Material.BONE);
+
+        // Don't duplicate recipe
+        if (Bukkit.getRecipe(Keys.OMINOUS_BOTTLE_RECIPE) != null) {
+            Bukkit.removeRecipe(Keys.OMINOUS_BOTTLE_RECIPE);
+        }
+
+        if (Config.getInstance().isRecipeEnabled("Ominous Bottle"))
+            Bukkit.addRecipe(ominousBottleRecipe);
     }
 
 }

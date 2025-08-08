@@ -1,5 +1,6 @@
 package me.Ford.modernManhunt.GUI;
 
+import me.Ford.modernManhunt.Config;
 import me.Ford.modernManhunt.CustomItems.RecipeFunctions;
 import me.Ford.modernManhunt.Functions;
 import me.Ford.modernManhunt.Keys;
@@ -32,7 +33,7 @@ public class GUIListener implements Listener {
                 // Null check so we can get item type
                 if (e.getCurrentItem() == null)
                     return;
-                if (e.getSlot() >= 9 || !(e.getClickedInventory().getType() == InventoryType.CHEST)){
+                if (e.getSlot() >= 18 || !(e.getClickedInventory().getType() == InventoryType.CHEST)){
                     return;
                 }
                 switch (e.getCurrentItem().getType()) {
@@ -72,6 +73,10 @@ public class GUIListener implements Listener {
                         p.openInventory(RecipeFunctions.trialMapRecipe(p));
                         p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Trial Chambers Map Recipe"));
                     }
+                    case Material.OMINOUS_BOTTLE -> {
+                        p.openInventory(RecipeFunctions.ominousBottleRecipe(p));
+                        p.setMetadata("OpenedRecipesMenu", new FixedMetadataValue(ModernManhunt.getInstance(), "Ominous Bottle Recipe"));
+                    }
                 }
             }
         } else if (p.hasMetadata("OpenedSpectatorMenu") || p.hasMetadata("OpenedTPMenu")) {
@@ -81,7 +86,7 @@ public class GUIListener implements Listener {
             SkullMeta meta = (SkullMeta) e.getCurrentItem().getItemMeta();
             if (!(p.hasMetadata("OpenedTPMenu") && meta.getOwningPlayer().getPlayer().isDead())) {
                 p.teleport(meta.getOwningPlayer().getLocation());
-                p.setCooldown(Keys.TP_COOLDOWN, 1200);
+                p.setCooldown(Keys.TP_COOLDOWN, Config.getInstance().itemCooldown("TP Star"));
             }
             else {
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 0.9f);

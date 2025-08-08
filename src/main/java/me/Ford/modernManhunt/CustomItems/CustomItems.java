@@ -22,6 +22,7 @@ import org.bukkit.map.MapCursor;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -373,6 +374,22 @@ public class CustomItems {
         meta.customName(potion_name);
         potion.setItemMeta(meta);
         return potion;
+    }
+
+    public static ItemStack ominousBottle(int level) {
+        ItemStack bottle = new ItemStack(Material.OMINOUS_BOTTLE);
+        OminousBottleMeta meta = (OminousBottleMeta) bottle.getItemMeta();
+        meta.setAmplifier(level);
+        bottle.setItemMeta(meta);
+        return bottle;
+    }
+
+    public static ItemStack waterBottle() {
+        ItemStack bottle = new ItemStack(Material.POTION);
+        PotionMeta meta = (PotionMeta) bottle.getItemMeta();
+        meta.setBasePotionType(PotionType.WATER);
+        bottle.setItemMeta(meta);
+        return bottle;
     }
 
     public static ItemStack dummyTrialMap() {

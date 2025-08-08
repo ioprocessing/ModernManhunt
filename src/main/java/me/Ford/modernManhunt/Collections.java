@@ -50,6 +50,7 @@ public class Collections {
                 RECIPES.put("Golden Head", CustomItems.goldenHead());
                 RECIPES.put("Loyalty Book", CustomItems.loyaltyBook());
                 RECIPES.put("Trial Chambers Map", CustomItems.dummyTrialMap());
+                RECIPES.put("Ominous Bottle", CustomItems.ominousBottle(0));
             }
 
     public static final ItemStack[] PRIMED_PICKAXE_INGREDIENTS = {
@@ -145,14 +146,26 @@ public class Collections {
 
     public static final ItemStack[] TRIAL_MAP_INGREDIENTS = {
             CustomItems.dummyTrialMap(),
-            null,
+            new ItemStack(Material.PAPER),
             new ItemStack(Material.COPPER_BLOCK),
-            null,
+            new ItemStack(Material.PAPER),
             new ItemStack(Material.COPPER_BLOCK),
             new ItemStack(Material.COMPASS),
             new ItemStack(Material.COPPER_BLOCK),
-            null,
+            new ItemStack(Material.PAPER),
             new ItemStack(Material.COPPER_BLOCK),
+            new ItemStack(Material.PAPER)};
+
+    public static final ItemStack[] OMINOUS_BOTTLE_INGREDIENTS = {
+            CustomItems.ominousBottle(0),
+            CustomItems.waterBottle(),
+            new ItemStack(Material.FERMENTED_SPIDER_EYE),
+            null,
+            new ItemStack(Material.ROTTEN_FLESH),
+            new ItemStack(Material.BONE),
+            null,
+            null,
+            null,
             null};
 
     public static final List<BarteringDrops> CUSTOM_BARTER_POOL = List.of(

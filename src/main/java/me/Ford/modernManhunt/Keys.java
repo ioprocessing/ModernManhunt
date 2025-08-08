@@ -25,5 +25,6 @@ public class Keys {
     public static final NamespacedKey LOYALTY_RECIPE = new NamespacedKey (ModernManhunt.getInstance(), "LoyaltyRecipe");
     public static final NamespacedKey TP_COOLDOWN = new NamespacedKey (ModernManhunt.getInstance(), "TPCooldown");
     public static final NamespacedKey TRIAL_MAP_RECIPE = new NamespacedKey (ModernManhunt.getInstance(), "TrialMapRecipe");
-    public static final NamespacedKey DUMMY_MAP = new NamespacedKey (ModernManhunt.getInstance(), "TrialMapRecipe");
+    public static final NamespacedKey DUMMY_MAP = new NamespacedKey (ModernManhunt.getInstance(), "DummyMap");
+    public static final NamespacedKey OMINOUS_BOTTLE_RECIPE = new NamespacedKey (ModernManhunt.getInstance(), "OminousBottleRecipe");
 }

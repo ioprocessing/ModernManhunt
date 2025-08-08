@@ -4,6 +4,11 @@ Worlds: []
 HandicapTP: []
 # List of players to keep armor on death
 HandicapArmor: []
+# Cooldown durations (in ticks)
+Cooldowns:
+  Consumable Head: 20
+  Golden Head: 300
+  TP Star: 1200
 # List of custom recipes to enable/disable
 Custom Recipes:
   Primed Pickaxe: true
@@ -15,3 +20,4 @@ Custom Recipes:
   Golden Head: true
   Loyalty Book: true
   Trial Chambers Map: true
+  Ominous Bottle: true

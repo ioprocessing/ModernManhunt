@@ -71,4 +71,11 @@ public class RecipeFunctions {
 
         return inventory;
     }
+
+    public static Inventory ominousBottleRecipe(Player p) {
+        Inventory inventory = Bukkit.createInventory(p, InventoryType.WORKBENCH, Component.text("Ominous Bottle (Shapeless)"));
+        inventory.setContents(Collections.OMINOUS_BOTTLE_INGREDIENTS);
+
+        return inventory;
+    }
 }

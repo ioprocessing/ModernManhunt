@@ -40,9 +40,9 @@ public class Functions {
 
     public static void openRecipesMenu(Player p) {
 
-        List<String> recipes = List.of("Primed Pickaxe", "Strengthened Sword", "Bolstered Bow", "Trident", "Compact Anvil", "Bundled Arrows", "Golden Head", "Loyalty Book", "Trial Chambers Map");
+        List<String> recipes = List.of("Primed Pickaxe", "Strengthened Sword", "Bolstered Bow", "Trident", "Compact Anvil", "Bundled Arrows", "Golden Head", "Loyalty Book", "Trial Chambers Map", "Ominous Bottle");
 
-        Inventory i = Bukkit.createInventory(p, 9, Component.text("Recipes"));
+        Inventory i = Bukkit.createInventory(p, 18, Component.text("Recipes"));
         int j = 0;
 
         for (String recipe : recipes) {
@@ -184,7 +184,7 @@ public class Functions {
         p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 1));
         p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 0));
         p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 2));
-        p.setCooldown(Keys.GOLDEN_HEAD_COOLDOWN, 300);
+        p.setCooldown(Keys.GOLDEN_HEAD_COOLDOWN, Config.getInstance().itemCooldown("Golden Head"));
 
         // Lower stack count
         Bukkit.getScheduler().runTask(ModernManhunt.getInstance(), () ->
@@ -205,7 +205,7 @@ public class Functions {
 
         p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
         p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 300, 0));
-        p.setCooldown(Keys.PLAYER_HEAD_COOLDOWN, 20);
+        p.setCooldown(Keys.PLAYER_HEAD_COOLDOWN, Config.getInstance().itemCooldown("Consumable Head"));
 
         // Lower stack count
         Bukkit.getScheduler().runTask(ModernManhunt.getInstance(), () ->
