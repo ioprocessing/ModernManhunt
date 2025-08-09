@@ -1,7 +1,7 @@
 package me.Ford.modernManhunt;
 
 import me.Ford.modernManhunt.Commands.ManhuntCommand;
-import me.Ford.modernManhunt.Records.BarteringDrops;
+import me.Ford.modernManhunt.Records.WeightedDrop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -224,19 +224,23 @@ public class Functions {
         }
     }
 
-    public static ItemStack getCustomBarter() {
-        int totalWeight = Collections.CUSTOM_BARTER_POOL.stream().mapToInt(BarteringDrops::weight).sum();
+    public static ItemStack getCustomLoot(List<? extends WeightedDrop> pool) {
+        int totalWeight = pool.stream()
+                .mapToInt(WeightedDrop::weight)
+                .sum();
+
         int roll = random(totalWeight, 1);
         int current = 0;
 
-        for (BarteringDrops drop : Collections.CUSTOM_BARTER_POOL) {
+        for (WeightedDrop drop : pool) {
             current += drop.weight();
             if (roll <= current) {
                 return drop.generator().get();
             }
         }
 
-        // Fallback
+        // If function fails, return nothing
         return new ItemStack(Material.AIR);
     }
+
 }

@@ -4,4 +4,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Supplier;
 
-public record BarteringDrops(int weight, Supplier<ItemStack> generator) implements WeightedDrop {}
+public interface WeightedDrop {
+    int weight();
+    Supplier<ItemStack> generator();
+}

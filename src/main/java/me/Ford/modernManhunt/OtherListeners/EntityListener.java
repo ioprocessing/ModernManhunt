@@ -1,5 +1,6 @@
 package me.Ford.modernManhunt.OtherListeners;
 
+import me.Ford.modernManhunt.Collections;
 import me.Ford.modernManhunt.Commands.ManhuntCommand;
 import me.Ford.modernManhunt.Functions;
 import me.Ford.modernManhunt.ModernManhunt;
@@ -44,6 +45,6 @@ public class EntityListener implements Listener {
 
         // Clear and replace with custom drops
         originalLoot.clear();
-        originalLoot.add(Functions.getCustomBarter());
+        originalLoot.add(Functions.getCustomLoot(Collections.CUSTOM_BARTER_POOL));
     }
 }

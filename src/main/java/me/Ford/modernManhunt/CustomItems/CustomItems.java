@@ -20,8 +20,6 @@ import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.inventory.meta.components.UseCooldownComponent;
 import org.bukkit.map.MapCursor;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import java.util.Arrays;
@@ -364,14 +362,23 @@ public class CustomItems {
     public static ItemStack fireResistancePotion(boolean splash) {
         ItemStack potion = new ItemStack(splash ? Material.SPLASH_POTION : Material.POTION);
         PotionMeta meta = (PotionMeta) potion.getItemMeta();
-        TextComponent potion_name;
-        if (splash)
-            potion_name = Component.text("Splash Potion of Fire Resistance",  NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false);
-        else
-            potion_name = Component.text("Potion of Fire Resistance",  NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false);
-        meta.addCustomEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 3600, 0), true);
-        meta.setColor(Color.fromRGB(255, 153, 0));
-        meta.customName(potion_name);
+        meta.setBasePotionType(PotionType.FIRE_RESISTANCE);
+        potion.setItemMeta(meta);
+        return potion;
+    }
+
+    public static ItemStack swiftnessPotion() {
+        ItemStack potion = new ItemStack(Material.POTION);
+        PotionMeta meta = (PotionMeta) potion.getItemMeta();
+        meta.setBasePotionType(PotionType.SWIFTNESS);
+        potion.setItemMeta(meta);
+        return potion;
+    }
+
+    public static ItemStack strengthPotion() {
+        ItemStack potion = new ItemStack(Material.POTION);
+        PotionMeta meta = (PotionMeta) potion.getItemMeta();
+        meta.setBasePotionType(PotionType.STRENGTH);
         potion.setItemMeta(meta);
         return potion;
     }
