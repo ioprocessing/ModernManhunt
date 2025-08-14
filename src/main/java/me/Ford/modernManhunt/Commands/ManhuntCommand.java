@@ -51,7 +51,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        if ((args.length > 3 && (!args[0].equalsIgnoreCase("handicap"))) || (args.length == 0))
+        if ((args.length > 3 && !(args[0].equalsIgnoreCase("handicap") || args[1].equalsIgnoreCase("create"))) || (args.length == 0))
             return false;
 
         Player s = (Player) sender;
@@ -236,16 +236,17 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
             case "world" -> {
                 if (
-                        ((args.length == 1) || ((args.length == 2) && !(args[1].equalsIgnoreCase("list"))))
+                        (((args.length == 1) || ((args.length == 2) && !(args[1].equalsIgnoreCase("list")))) || args.length > 4)
                 )
                     return false;
                 switch (args[1].toLowerCase()) {
                     case "create" -> {
-                        if ( !(Bukkit.getWorld(args[2]) == null) || !StringUtils.isAlphanumeric(args[2]))
+                        if (Bukkit.getWorld(args[2]) != null || !StringUtils.isAlphanumeric(args[2]) || (args.length == 4 && !StringUtils.isNumeric(args[3])))
                             return false;
-                        Long randomSeed = new ArrayList<>(Seeds.seedSet)
-                                .get(new Random().nextInt(Seeds.seedSet.size()));
-
+                        Long randomSeed;
+                        if (args.length == 3)
+                            randomSeed = new ArrayList<>(Seeds.seedSet).get(new Random().nextInt(Seeds.seedSet.size()));
+                        else randomSeed = Long.valueOf(args[3]);
                         // OVERWORLD
 
                         WorldCreator wcOverworld = new WorldCreator(args[2]);
