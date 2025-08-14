@@ -7,7 +7,8 @@ import me.Ford.modernManhunt.CustomItemListeners.PrimedPickaxeListener;
 import me.Ford.modernManhunt.CustomItemListeners.SafetyListener;
 import me.Ford.modernManhunt.CustomItems.CustomRecipes;
 import me.Ford.modernManhunt.GUI.GUIListener;
-import me.Ford.modernManhunt.OtherListeners.EntityListener;
+import me.Ford.modernManhunt.OtherListeners.EnderDragonKillListener;
+import me.Ford.modernManhunt.OtherListeners.PiglinBarterListener;
 import me.Ford.modernManhunt.OtherListeners.StrengthListener;
 import me.Ford.modernManhunt.PlayerListeners.*;
 import org.bukkit.Bukkit;
@@ -62,21 +63,25 @@ public final class ModernManhunt extends JavaPlugin {
 
     public void register(Plugin instance) {
         CustomRecipes.register();
+        Config.getInstance().load();
         getServer().getPluginManager().registerEvents(new HeadListener(), instance);
         getServer().getPluginManager().registerEvents(new PrimedPickaxeListener(), instance);
         getServer().getPluginManager().registerEvents(new SafetyListener(), instance);
         getServer().getPluginManager().registerEvents(new GUIListener(), instance);
-        getServer().getPluginManager().registerEvents(new EntityListener(), instance);
-        getServer().getPluginManager().registerEvents(new BedBombingListener(), instance);
+        getServer().getPluginManager().registerEvents(new EnderDragonKillListener(), instance);
         getServer().getPluginManager().registerEvents(new DeathMessageListener(), instance);
         getServer().getPluginManager().registerEvents(new DimensionTravelListener(), instance);
         getServer().getPluginManager().registerEvents(new HunterListener(), instance);
         getServer().getPluginManager().registerEvents(new RespawnLocationListener(), instance);
         getServer().getPluginManager().registerEvents(new RunnerListener(), instance);
         getServer().getPluginManager().registerEvents(new SpectatorInteractionListener(), instance);
-        getServer().getPluginManager().registerEvents(new StrengthListener(), instance);
         getServer().getPluginManager().registerEvents(new MapUseListener(), instance);
-        Config.getInstance().load();
+        if (Config.customBarteringEnabled)
+            getServer().getPluginManager().registerEvents(new PiglinBarterListener(), instance);
+        if (Config.strengthModifierEnabled)
+            getServer().getPluginManager().registerEvents(new StrengthListener(), instance);
+        if (Config.customBedBombingEnabled)
+            getServer().getPluginManager().registerEvents(new BedBombingListener(), instance);
     }
 
     @Override

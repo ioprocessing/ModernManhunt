@@ -1,5 +1,6 @@
 package me.Ford.modernManhunt.PlayerListeners;
 
+import me.Ford.modernManhunt.Config;
 import me.Ford.modernManhunt.Functions;
 import me.Ford.modernManhunt.ModernManhunt;
 import org.bukkit.Bukkit;
@@ -27,16 +28,16 @@ public class DimensionTravelListener implements Listener {
             toWorld = Bukkit.getWorld(name.substring(0, name.length() - 7)); // Overworld name
             if (toWorld == null) return;
 
-            // 1:1 coordinate mapping
-            to = new Location(toWorld, from.getX(), from.getY(), from.getZ());
+            // Ratio coordinate mapping
+            to = new Location(toWorld, from.getX() * Config.netherTravelRatio, from.getY(), from.getZ() * Config.netherTravelRatio);
 
         } else if (fromWorld.getEnvironment() == World.Environment.NORMAL) {
             if (event.getTo().getWorld().getEnvironment() == World.Environment.NETHER) {
                 // If we go to the Nether from the Overworld:
                 toWorld = Bukkit.getWorld(fromWorld.getName() + "_nether"); // Nether name
                 if (toWorld == null) return;
-                // 1:1 coordinate mapping
-                to = new Location(toWorld, from.getX(), from.getY(), from.getZ());
+                // Ratio coordinate mapping
+                to = new Location(toWorld, from.getX() / Config.netherTravelRatio, from.getY(), from.getZ() / Config.netherTravelRatio);
             } else if (event.getTo().getWorld().getEnvironment() == World.Environment.THE_END) {
                 // If we go to the End from the Overworld:
                 toWorld = Bukkit.getWorld(fromWorld.getName() + "_the_end"); // The End name

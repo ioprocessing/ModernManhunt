@@ -20,6 +20,13 @@ public class Config {
     public static List<String> handicapArmorList = new ArrayList<>();
     public static Map<String, Integer> cooldownList = new HashMap<>();
     public static Map<String, Boolean> recipeList = new HashMap<>();
+    public static Map<String, Integer> barterWeightList = new HashMap<>();
+    public static Map<String, Integer> strengthModifierList = new HashMap<>();
+    public static boolean customBarteringEnabled;
+    public static boolean strengthModifierEnabled;
+    public static boolean customBedBombingEnabled;
+    public static int bedExplosionStrength;
+    public static int netherTravelRatio;
 
     private Config() {
     }
@@ -41,7 +48,11 @@ public class Config {
         worldsList = config.getStringList("Worlds");
         handicapTPList = config.getStringList("HandicapTP");
         handicapArmorList = config.getStringList("HandicapArmor");
-
+        customBarteringEnabled = config.getBoolean("Custom Bartering");
+        strengthModifierEnabled = config.getBoolean("Custom Strength Modifier");
+        customBedBombingEnabled = config.getBoolean("Custom Bed Bombing");
+        bedExplosionStrength = config.getInt("Bed Bombing Explosion Strength");
+        netherTravelRatio = config.getInt("Nether Travel Ratio");
         // Load cooldown durations
         ConfigurationSection cooldownSection = config.getConfigurationSection("Cooldowns");
         if (cooldownSection != null) {
@@ -57,6 +68,21 @@ public class Config {
             }
         }
 
+        // Load custom bartering weights
+        ConfigurationSection barteringSection = config.getConfigurationSection("Custom Bartering Weights");
+        if (barteringSection != null) {
+            for (String key : barteringSection.getKeys(false)) {
+                barterWeightList.put(key, barteringSection.getInt(key));
+            }
+        }
+
+        // Load strength damage modifiers
+        ConfigurationSection strengthSection = config.getConfigurationSection("Custom Strength Modifiers");
+        if (strengthSection != null) {
+            for (String key : strengthSection.getKeys(false)) {
+                strengthModifierList.put(key, strengthSection.getInt(key));
+            }
+        }
     }
 
     public void save() {
@@ -110,6 +136,14 @@ public class Config {
 
     public int itemCooldown(String itemName) {
         return cooldownList.getOrDefault(itemName, 0);
+    }
+
+    public static int barterWeight(String barterName) {
+        return barterWeightList.getOrDefault(barterName, 0);
+    }
+
+    public int strengthModifier(String strengthLevel) {
+        return strengthModifierList.getOrDefault(strengthLevel, 0);
     }
 
     public static Config getInstance() {

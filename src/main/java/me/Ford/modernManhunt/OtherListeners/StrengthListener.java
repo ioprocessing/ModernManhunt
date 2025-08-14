@@ -1,5 +1,6 @@
 package me.Ford.modernManhunt.OtherListeners;
 
+import me.Ford.modernManhunt.Config;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,9 +23,9 @@ public class StrengthListener implements Listener {
                 if(effect.getType() == PotionEffectType.STRENGTH) {
                     if(effect.getAmplifier() == 0) {
                         // Remove 2 flat damage, multiplied by the cooldown of their attack
-                        damage = damage - (2 * p.getAttackCooldown());
+                        damage = damage - ((3 - Config.getInstance().strengthModifier("Strength I Damage Increase")) * p.getAttackCooldown());
                     } else if (effect.getAmplifier() == 1) {
-                        damage = damage - (4 * p.getAttackCooldown());
+                        damage = damage - ((6 - Config.getInstance().strengthModifier("Strength II Damage Increase")) * p.getAttackCooldown());
                     }
                 }
             }

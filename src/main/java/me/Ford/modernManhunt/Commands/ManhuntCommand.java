@@ -334,13 +334,11 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
             /// HELP ARGS ///
 
             case "help" ->
-                s.sendMessage(Component.text("§6> §a/recipes" +
-                        "\n§6> §a/mm [runner/hunter] [add/remove] <player name>" +
-                        "\n§6> §a/mm [runner/hunter] list" +
-                        "\n§6> §a/mm handicap [add/remove] <hunter name> [tp/armor]" +
-                        "\n§6> §a/mm handicap list" +
-                        "\n§6> §a/mm world [create/delete/tp/unload] <world name>" +
-                        "\n§6> §a/mm world list" +
+                s.sendMessage(Component.text("§6> §a/recipe" +
+                        "\n§6> §a/mm runner <args>" +
+                        "\n§6> §a/mm hunter <args>" +
+                        "\n§6> §a/mm handicap <args>" +
+                        "\n§6> §a/mm world <args>" +
                         "\n§6> §a/mm start" +
                         "\n§6> §a/mm stop" +
                         "\n§6> §a/mm help" +

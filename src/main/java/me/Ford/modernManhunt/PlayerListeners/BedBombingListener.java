@@ -1,5 +1,6 @@
 package me.Ford.modernManhunt.PlayerListeners;
 
+import me.Ford.modernManhunt.Config;
 import me.Ford.modernManhunt.ModernManhunt;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -20,7 +21,7 @@ public class BedBombingListener implements Listener {
     // Data tracking for custom bed bomb logic
     Location explosionLoc = null;
     boolean bedExploded = false;
-    int explosionPower = 4;
+    int explosionPower = Config.bedExplosionStrength;
 
     @EventHandler
     public void onBedClick(PlayerInteractEvent e) {
