@@ -20,7 +20,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.scoreboard.Team;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -33,15 +32,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static me.Ford.modernManhunt.Functions.participantArray;
+
 public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
     ///  TODO: MAKE THIS CLASS READABLE
     ///
-    public static Team mmRunners = Functions.board.registerNewTeam("mmRunners");
-    public static Team mmHunters = Functions.board.registerNewTeam("mmHunters");
-    public static ArrayList<Player> runnerArray = new ArrayList<>();
-    public static ArrayList<Player> hunterArray = new ArrayList<>();
-    public static ArrayList<Player> participantArray = new ArrayList<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
@@ -69,33 +65,33 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                 switch (args[1].toLowerCase()) {
                     case "add" -> {
                         Player p =  Bukkit.getPlayer(args[2]);
-                        if (!(mmRunners.getEntries().contains(p.getName()))) {
-                            if (mmHunters.getEntries().contains(p.getName())) {
-                                mmHunters.removeEntity(p);
-                                hunterArray.remove(p);
+                        if (!(Functions.mmRunners.getEntries().contains(p.getName()))) {
+                            if (Functions.mmHunters.getEntries().contains(p.getName())) {
+                                Functions.mmHunters.removeEntity(p);
+                                Functions.hunterArray.remove(p);
                             }
-                            mmRunners.addEntity(p);
-                            runnerArray.add(p);
+                            Functions.mmRunners.addEntity(p);
+                            Functions.runnerArray.add(p);
                             participantArray.add(p);
-                            s.sendMessage("§aSuccessfully added that player to the runners!");
+                            s.sendMessage("§aSuccessfully added " + p.getName() + " to the runners!");
                         }
-                        else s.sendMessage("§cThat player is already a runner!");
+                        else s.sendMessage("§c" + p.getName() + " is already a runner!");
                     }
                     case "remove" -> {
                         Player p =  Bukkit.getPlayer(args[2]);
-                        if (mmRunners.getEntries().contains(p.getName())) {
-                            mmRunners.removeEntity(p);
-                            runnerArray.remove(p);
+                        if (Functions.mmRunners.getEntries().contains(p.getName())) {
+                            Functions.mmRunners.removeEntity(p);
+                            Functions.runnerArray.remove(p);
                             participantArray.remove(p);
-                            s.sendMessage("§aSuccessfully removed that player from the runners!");
+                            s.sendMessage("§aSuccessfully removed " + p.getName() + " from the runners!");
                         }
-                        else s.sendMessage("§cThat player isn't a runner!");
+                        else s.sendMessage("§c" + p.getName() + " isn't a runner!");
                     }
                     case "list" -> {
-                        if (mmRunners.getEntries().isEmpty())
+                        if (Functions.mmRunners.getEntries().isEmpty())
                             s.sendRawMessage("§cThere are no players currently running!");
                         else {
-                            String playerList = String.join(", ", mmRunners.getEntries());
+                            String playerList = String.join(", ", Functions.mmRunners.getEntries());
                             s.sendRawMessage("§aRunners: " + playerList);
                         }
                     }
@@ -116,33 +112,33 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                 switch (args[1].toLowerCase()) {
                     case "add" -> {
                         Player p =  Bukkit.getPlayer(args[2]);
-                        if (!(mmHunters.getEntries().contains(p.getName()))) {
-                            if (mmRunners.getEntries().contains(p.getName())) {
-                                mmRunners.removeEntity(p);
-                                runnerArray.remove(p);
+                        if (!(Functions.mmHunters.getEntries().contains(p.getName()))) {
+                            if (Functions.mmRunners.getEntries().contains(p.getName())) {
+                                Functions.mmRunners.removeEntity(p);
+                                Functions.runnerArray.remove(p);
                             }
-                            mmHunters.addEntity(p);
-                            hunterArray.add(p);
+                            Functions.mmHunters.addEntity(p);
+                            Functions.hunterArray.add(p);
                             participantArray.add(p);
-                            s.sendMessage("§aSuccessfully added that player to the hunters!");
+                            s.sendMessage("§aSuccessfully added " + p.getName() + " to the hunters!");
                         }
-                        else s.sendMessage("§cThat player is already a hunter!");
+                        else s.sendMessage("§c" + p.getName() + " is already a hunter!");
                     }
                     case "remove" -> {
                         Player p =  Bukkit.getPlayer(args[2]);
-                        if (mmHunters.getEntries().contains(p.getName())) {
-                            mmHunters.removeEntity(p);
-                            hunterArray.remove(p);
+                        if (Functions.mmHunters.getEntries().contains(p.getName())) {
+                            Functions.mmHunters.removeEntity(p);
+                            Functions.hunterArray.remove(p);
                             participantArray.remove(p);
-                            s.sendMessage("§aSuccessfully removed that player from the hunters!");
+                            s.sendMessage("§aSuccessfully removed " + p.getName() + " from the hunters!");
                         }
-                        else s.sendMessage("§cThat player isn't a hunter!");
+                        else s.sendMessage("§c" + p.getName() + " isn't a hunter!");
                     }
                     case "list" -> {
-                        if (mmHunters.getEntries().isEmpty())
+                        if (Functions.mmHunters.getEntries().isEmpty())
                             s.sendRawMessage("§cThere are no players currently hunting!");
                         else {
-                            String playerList = String.join(", ", mmHunters.getEntries());
+                            String playerList = String.join(", ", Functions.mmHunters.getEntries());
                             s.sendRawMessage("§aHunters: " + playerList);
                         }
                     }
@@ -155,7 +151,12 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
             ///  START ARGS ///
 
             case "start" -> {
-                if (!(mmRunners.getEntries().isEmpty()) && !(mmHunters.getEntries().isEmpty())) {
+                if (!(Functions.mmRunners.getEntries().isEmpty()) && !(Functions.mmHunters.getEntries().isEmpty())) {
+                    for(Player participant : participantArray)
+                        if (participant.isDead()) {
+                            s.sendRawMessage("§cAll players must be alive to begin!");
+                            return true;
+                        }
                     // Disable locator bar
                     String worldName = s.getWorld().getName();
                     ArrayList<World> selectWorlds = new ArrayList<>();
@@ -169,7 +170,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     Component mainTitle = Component.text("Get ready!", NamedTextColor.GREEN).decoration(TextDecoration.BOLD, true);
                     Title.Times times = Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(3000), Duration.ofMillis(500));
                     // For each hunter,
-                    for (String name : mmHunters.getEntries()) {
+                    for (String name : Functions.mmHunters.getEntries()) {
                         // Make them healthy + clear their inventory
                         Functions.resetPlayer(name);
                         Player p = Bukkit.getPlayer(name);
@@ -187,13 +188,13 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
                         // And give them a compass
                         ItemStack compass = CustomItems.hunterCompass(p);
-                        LodestoneTracker loc = LodestoneTracker.lodestoneTracker(ManhuntCommand.runnerArray.getFirst().getLocation(), false);
+                        LodestoneTracker loc = LodestoneTracker.lodestoneTracker(Functions.runnerArray.getFirst().getLocation(), false);
                         compass.setData(DataComponentTypes.LODESTONE_TRACKER, loc);
                         p.getInventory().setItem(8, compass);
                         p.updateInventory();
                     }
                     // For each runner,
-                    for (String name : mmRunners.getEntries()) {
+                    for (String name : Functions.mmRunners.getEntries()) {
                         // Make them healthy and mark that they're being hunted
                         Functions.resetPlayer(name);
                         Player p = Bukkit.getPlayer(name);
@@ -215,6 +216,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                     for (Player p : s.getWorld().getPlayers()) {
                         p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.1f, 0.5f);
                     }
+                    s.getWorld().setTime(0);
                 } else {
                     s.sendRawMessage("§cYou must have at least one player on both teams to begin!");
                 }

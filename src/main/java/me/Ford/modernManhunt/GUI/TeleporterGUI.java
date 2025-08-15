@@ -1,7 +1,7 @@
 package me.Ford.modernManhunt.GUI;
 
 import me.Ford.modernManhunt.CustomItems.CustomItems;
-import me.Ford.modernManhunt.Commands.ManhuntCommand;
+import me.Ford.modernManhunt.Functions;
 import me.Ford.modernManhunt.ModernManhunt;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -14,7 +14,7 @@ public class TeleporterGUI {
         Inventory i = Bukkit.createInventory(p, 27, Component.text("Runners"));
 
         int count = 0;
-        for (Player participant : ManhuntCommand.participantArray) {
+        for (Player participant : Functions.participantArray) {
             if(!participant.hasMetadata("DeadRunner")) {
                 i.setItem(count, CustomItems.getSpecHead(participant));
                 count++;
@@ -33,7 +33,7 @@ public class TeleporterGUI {
         Inventory i = Bukkit.createInventory(p, 27, Component.text("Hunters"));
 
         int count = 0;
-        for (String hunter : ManhuntCommand.mmHunters.getEntries()) {
+        for (String hunter : Functions.mmHunters.getEntries()) {
             if (Bukkit.getPlayer(hunter) == p)
                 continue;
             i.setItem(count, CustomItems.getSpecHead(Bukkit.getPlayer(hunter)));

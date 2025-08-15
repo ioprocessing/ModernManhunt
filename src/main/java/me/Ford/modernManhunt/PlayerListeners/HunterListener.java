@@ -2,7 +2,6 @@ package me.Ford.modernManhunt.PlayerListeners;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.LodestoneTracker;
-import me.Ford.modernManhunt.Commands.ManhuntCommand;
 import me.Ford.modernManhunt.Config;
 import me.Ford.modernManhunt.CustomItems.CustomItems;
 import me.Ford.modernManhunt.Functions;
@@ -33,10 +32,10 @@ public class HunterListener implements Listener {
     @EventHandler
     public void onHunterDeath(PlayerDeathEvent e) {
         Player p = e.getEntity();
-        if (ManhuntCommand.hunterArray.contains(p)) {
+        if (Functions.hunterArray.contains(p)) {
             if (p.getKiller() != null) {
                 // If a hunter kills a hunter, prevent a head from dropping
-                if (!(ManhuntCommand.hunterArray.contains(p.getKiller()) && ManhuntCommand.hunterArray.contains(p)))
+                if (!(Functions.hunterArray.contains(p.getKiller()) && Functions.hunterArray.contains(p)))
                     e.getDrops().add(CustomItems.consumablePlayerHead(p));
             }
             // If they're on the handicap armor list,
@@ -84,7 +83,7 @@ public class HunterListener implements Listener {
                     NamedTextColor targetColor = NamedTextColor.GREEN;
 
                     // Increment the index whenever left-clicked, if at the end then reset
-                    if (index < (ManhuntCommand.runnerArray.size() - 1))
+                    if (index < (Functions.runnerArray.size() - 1))
                         index = index + 1;
                     else index = 0;
 
@@ -102,8 +101,8 @@ public class HunterListener implements Listener {
                             Component.text("and left click to change target.").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
                     e.getItem().setItemMeta(handItem);
 
-                    if (ManhuntCommand.runnerArray.get(index).getWorld().equals(p.getWorld())) {
-                        LodestoneTracker loc = LodestoneTracker.lodestoneTracker(ManhuntCommand.runnerArray.get(index).getLocation(), false);
+                    if (Functions.runnerArray.get(index).getWorld().equals(p.getWorld())) {
+                        LodestoneTracker loc = LodestoneTracker.lodestoneTracker(Functions.runnerArray.get(index).getLocation(), false);
                         e.getItem().setData(DataComponentTypes.LODESTONE_TRACKER, loc);
                         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.1f, 0.5f);
                     } else {
@@ -118,8 +117,8 @@ public class HunterListener implements Listener {
                             .build());
 
                 } else  /*If they right-click */ {
-                    if (ManhuntCommand.runnerArray.get(index).getWorld().equals(p.getWorld())) {
-                        LodestoneTracker loc = LodestoneTracker.lodestoneTracker(ManhuntCommand.runnerArray.get(index).getLocation(), false);
+                    if (Functions.runnerArray.get(index).getWorld().equals(p.getWorld())) {
+                        LodestoneTracker loc = LodestoneTracker.lodestoneTracker(Functions.runnerArray.get(index).getLocation(), false);
                         e.getItem().setData(DataComponentTypes.LODESTONE_TRACKER, loc);
                         p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.1f, 1f);
                         p.sendActionBar(Component.text()
@@ -139,20 +138,20 @@ public class HunterListener implements Listener {
     public void onHunterRespawn(PlayerRespawnEvent e) {
         Player p =  e.getPlayer();
         // If the player is a handicapped runner, give them the TP star
-        if (Config.handicapTPList.contains(p.getName()) && ManhuntCommand.hunterArray.contains(p))
+        if (Config.handicapTPList.contains(p.getName()) && Functions.hunterArray.contains(p))
             p.getInventory().setItem(7, CustomItems.tpStar());
 
         boolean aliveRunner = false;
         // If any of the players marked as runners are alive, give the respawning hunter a compass (hunt is still on)
-        for (Player runner : ManhuntCommand.runnerArray) {
+        for (Player runner : Functions.runnerArray) {
             if (runner.hasMetadata("BeingHunted"))
                 aliveRunner = true;
         }
-        if (ManhuntCommand.mmHunters.getEntries().contains(e.getPlayer().getName()) && aliveRunner) {
+        if (Functions.mmHunters.getEntries().contains(e.getPlayer().getName()) && aliveRunner) {
             List<MetadataValue> metadata = p.getMetadata("TargetedPlayer");
             int index = metadata.getFirst().asInt();
             ItemStack compass = CustomItems.hunterCompass(p);
-            LodestoneTracker loc = LodestoneTracker.lodestoneTracker(ManhuntCommand.runnerArray.get(index).getLocation(), false);
+            LodestoneTracker loc = LodestoneTracker.lodestoneTracker(Functions.runnerArray.get(index).getLocation(), false);
             compass.setData(DataComponentTypes.LODESTONE_TRACKER, loc);
             p.getInventory().setItem(8, compass);
         }

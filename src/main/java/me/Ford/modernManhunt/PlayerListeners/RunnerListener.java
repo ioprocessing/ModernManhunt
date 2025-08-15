@@ -1,6 +1,5 @@
 package me.Ford.modernManhunt.PlayerListeners;
 
-import me.Ford.modernManhunt.Commands.ManhuntCommand;
 import me.Ford.modernManhunt.CustomItems.CustomItems;
 import me.Ford.modernManhunt.Functions;
 import me.Ford.modernManhunt.ModernManhunt;
@@ -21,7 +20,7 @@ public class RunnerListener implements Listener {
     @EventHandler
     public void onRunnerDeath(PlayerDeathEvent e) {
         Player p = e.getEntity();
-        if (!ManhuntCommand.runnerArray.contains(p))
+        if (!Functions.runnerArray.contains(p))
             return;
         e.getDrops().add(CustomItems.consumablePlayerHead(p));
         if (p.hasMetadata("BeingHunted")) {
@@ -29,7 +28,7 @@ public class RunnerListener implements Listener {
             p.removeMetadata("BeingHunted", ModernManhunt.getInstance());
             p.setMetadata("DeadRunner", new FixedMetadataValue(ModernManhunt.getInstance(), true));
             // If any of the players marked as runners are alive, don't end the game
-            for (Player runner : ManhuntCommand.runnerArray) {
+            for (Player runner : Functions.runnerArray) {
                 if (runner.hasMetadata("BeingHunted"))
                     aliveRunner = true;
             }

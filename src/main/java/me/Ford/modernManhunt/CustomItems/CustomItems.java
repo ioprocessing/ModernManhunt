@@ -1,6 +1,5 @@
 package me.Ford.modernManhunt.CustomItems;
 
-import me.Ford.modernManhunt.Commands.ManhuntCommand;
 import me.Ford.modernManhunt.Functions;
 import me.Ford.modernManhunt.Keys;
 import net.kyori.adventure.text.Component;
@@ -304,7 +303,7 @@ public class CustomItems {
         // Name the head after the player and style it
         TextComponent head_name = Component.text("");
 
-        if (ManhuntCommand.mmHunters.getEntries().contains(p.getName())) {
+        if (Functions.mmHunters.getEntries().contains(p.getName())) {
             head_name = Component.text(p.getName(), NamedTextColor.RED).decoration(TextDecoration.ITALIC, false);
             meta.lore(List.of(Component.text("Hunter").color(NamedTextColor.RED).decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true)));
         } else {

@@ -76,6 +76,7 @@ public final class ModernManhunt extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RunnerListener(), instance);
         getServer().getPluginManager().registerEvents(new SpectatorInteractionListener(), instance);
         getServer().getPluginManager().registerEvents(new MapUseListener(), instance);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), instance);
         if (Config.customBarteringEnabled)
             getServer().getPluginManager().registerEvents(new PiglinBarterListener(), instance);
         if (Config.strengthModifierEnabled)

@@ -1,6 +1,5 @@
 package me.Ford.modernManhunt.OtherListeners;
 
-import me.Ford.modernManhunt.Commands.ManhuntCommand;
 import me.Ford.modernManhunt.Functions;
 import me.Ford.modernManhunt.ModernManhunt;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -22,13 +21,13 @@ public class EnderDragonKillListener implements Listener {
         if (e.getType().equals(EntityType.ENDER_DRAGON)) {
             boolean aliveRunner = false;
             // If any of the players marked as runners are alive, end the game
-            for (Player runner : ManhuntCommand.runnerArray) {
+            for (Player runner : Functions.runnerArray) {
                 if (runner.hasMetadata("BeingHunted"))
                     aliveRunner = true;
             }
             if (aliveRunner) {
                 Functions.gameEnd("Runners win!", NamedTextColor.GREEN);
-                for (Player runner : ManhuntCommand.runnerArray) {runner.removeMetadata("BeingHunted",  ModernManhunt.getInstance());}
+                for (Player runner : Functions.runnerArray) {runner.removeMetadata("BeingHunted",  ModernManhunt.getInstance());}
             }
         }
     }
