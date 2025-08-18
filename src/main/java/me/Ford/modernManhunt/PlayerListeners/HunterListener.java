@@ -35,7 +35,7 @@ public class HunterListener implements Listener {
         if (Functions.hunterArray.contains(p)) {
             if (p.getKiller() != null) {
                 // If a hunter kills a hunter, prevent a head from dropping
-                if (!(Functions.hunterArray.contains(p.getKiller()) && Functions.hunterArray.contains(p)))
+                if (!(Functions.hunterArray.contains(p.getKiller()) && Functions.hunterArray.contains(p)) && Config.headDroppingEnabled)
                     e.getDrops().add(CustomItems.consumablePlayerHead(p));
             }
             // If they're on the handicap armor list,

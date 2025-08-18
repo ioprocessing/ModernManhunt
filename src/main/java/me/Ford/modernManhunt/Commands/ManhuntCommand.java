@@ -153,8 +153,11 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
             case "start" -> {
                 if (!(Functions.mmRunners.getEntries().isEmpty()) && !(Functions.mmHunters.getEntries().isEmpty())) {
                     for(Player participant : participantArray)
-                        if (participant.isDead()) {
+                        if (participant.isDead() && participant.isOnline()) {
                             s.sendRawMessage("§cAll players must be alive to begin!");
+                            return true;
+                        } else if (participant.hasMetadata("BeingHunted")) {
+                            s.sendRawMessage("§cThe ongoing manhunt must end before another can begin!");
                             return true;
                         }
                     // Disable locator bar
@@ -178,7 +181,8 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         if (Config.handicapTPList.contains(p.getName()))
                             p.getInventory().setItem(7, CustomItems.tpStar());
                         p.setMetadata("TargetedPlayer", new FixedMetadataValue(ModernManhunt.getInstance(), 0));
-                        Title title = Title.title(mainTitle, Component.empty(), times);
+                        Component hunterSubtitle = Component.text("Hunt down the runners", NamedTextColor.GREEN);
+                        Title title = Title.title(mainTitle, hunterSubtitle, times);
                         p.showTitle(title);
 
                         // If the player's current respawn location isn't in the world the hunt starts in,
@@ -199,8 +203,8 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         Functions.resetPlayer(name);
                         Player p = Bukkit.getPlayer(name);
                         p.setMetadata("BeingHunted", new FixedMetadataValue(ModernManhunt.getInstance(), true));
-                        Component runSubtitle = Component.text("Punch a hunter or start running to begin", NamedTextColor.GREEN);
-                        Title title = Title.title(mainTitle, runSubtitle, times);
+                        Component runnerSubtitle = Component.text("Escape the hunters", NamedTextColor.GREEN);
+                        Title title = Title.title(mainTitle, runnerSubtitle, times);
                         p.showTitle(title);
 
                         p.setMetadata("PVPImmune", new FixedMetadataValue(ModernManhunt.getInstance(), true));
@@ -231,7 +235,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         Functions.exitSpectator(p);
                     }
                 }
-                s.sendMessage("§cEnded the current manhunt and cleared all tags");
+                s.sendMessage("§cEnded any ongoing manhunts and cleared all tags");
             }
 
             ///  WORLD ARGS ///
@@ -345,6 +349,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                         "\n§6> §a/mm start" +
                         "\n§6> §a/mm stop" +
                         "\n§6> §a/mm help" +
+                        "\n§6> §a/mm infection" +
                         "\n§6> §a/mm reload"));
 
             ///  HANDICAP ARGS ///
@@ -412,6 +417,14 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
                 s.sendRawMessage("§aReloaded ModernManhunt!");
             }
 
+            ///  INFECTION ARGS ///
+
+            case "infection" -> {
+                if(Config.getInstance().toggleInfection())
+                    s.sendRawMessage("§aEnabled infection mode!");
+                else s.sendRawMessage("§cDisabled infection mode!");
+            }
+
             default -> {
                 return false;
             }
@@ -424,7 +437,7 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
 
         switch (args.length) {
             case 1 -> {
-                return Arrays.asList("runner", "hunter", "stop", "start", "world", "help", "handicap", "reload");
+                return Arrays.asList("runner", "hunter", "stop", "start", "world", "help", "handicap", "reload", "infection");
             }
             case 2 -> {
                 if (args[0].equalsIgnoreCase("runner") ||  args[0].equalsIgnoreCase("hunter") || args[0].equalsIgnoreCase("handicap")) {

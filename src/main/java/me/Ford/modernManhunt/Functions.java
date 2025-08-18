@@ -221,10 +221,12 @@ public class Functions {
         Component mainTitle = Component.text(winnerMessage, color).decoration(TextDecoration.BOLD, true);
         Title.Times times = Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(3000), Duration.ofMillis(500));
         Title title = Title.title(mainTitle, Component.empty(), times);
-        for (Player participant : participantArray) {
-            participant.showTitle(title);
-            participant.playSound(participant.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.3f, 1f);
-            participant.removeMetadata("DeadRunner", ModernManhunt.getInstance());
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            p.showTitle(title);
+            p.playSound(p.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.3f, 1f);
+            if (p.hasMetadata("DeadRunner"))
+                Functions.exitSpectator(p);
+            p.removeMetadata("BeingHunted",  ModernManhunt.getInstance());
         }
     }
 

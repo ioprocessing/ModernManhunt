@@ -1,7 +1,6 @@
 package me.Ford.modernManhunt.OtherListeners;
 
 import me.Ford.modernManhunt.Functions;
-import me.Ford.modernManhunt.ModernManhunt;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -27,7 +26,6 @@ public class EnderDragonKillListener implements Listener {
             }
             if (aliveRunner) {
                 Functions.gameEnd("Runners win!", NamedTextColor.GREEN);
-                for (Player runner : Functions.runnerArray) {runner.removeMetadata("BeingHunted",  ModernManhunt.getInstance());}
             }
         }
     }

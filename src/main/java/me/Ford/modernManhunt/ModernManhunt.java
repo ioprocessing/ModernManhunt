@@ -96,6 +96,14 @@ public final class ModernManhunt extends JavaPlugin {
             if (worldName.endsWith("_the_end")) {env = World.Environment.THE_END;}
             Bukkit.createWorld(new WorldCreator(worldName).environment(env));
         }
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            Functions.mmHunters.removePlayer(p);
+            Functions.mmRunners.removePlayer(p);
+            Functions.participantArray.remove(p);
+            Functions.hunterArray.remove(p);
+            Functions.runnerArray.remove(p);
+        }
+
     }
 
     @Override

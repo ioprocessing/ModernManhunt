@@ -25,6 +25,8 @@ public class Config {
     public static boolean customBarteringEnabled;
     public static boolean strengthModifierEnabled;
     public static boolean customBedBombingEnabled;
+    public static boolean infectionEnabled;
+    public static boolean headDroppingEnabled;
     public static int bedExplosionStrength;
     public static int netherTravelRatio;
 
@@ -51,6 +53,8 @@ public class Config {
         customBarteringEnabled = config.getBoolean("Custom Bartering");
         strengthModifierEnabled = config.getBoolean("Custom Strength Modifier");
         customBedBombingEnabled = config.getBoolean("Custom Bed Bombing");
+        infectionEnabled = config.getBoolean("Infection Mode Enabled");
+        headDroppingEnabled = config.getBoolean("Players Drop Heads");
         bedExplosionStrength = config.getInt("Bed Bombing Explosion Strength");
         netherTravelRatio = config.getInt("Nether Travel Ratio");
         // Load cooldown durations
@@ -128,6 +132,18 @@ public class Config {
             }
         }
         save();
+    }
+
+    public boolean toggleInfection() {
+        if (infectionEnabled) {
+            config.set("Infection Mode Enabled", false);
+            save();
+            return infectionEnabled = false;
+        } else {
+            config.set("Infection Mode Enabled", true);
+            save();
+            return infectionEnabled = true;
+        }
     }
 
     public boolean isRecipeEnabled(String recipeName) {

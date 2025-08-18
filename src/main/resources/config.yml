@@ -58,3 +58,7 @@ Custom Bed Bombing: true
 Bed Bombing Explosion Strength: 4
 # Nether travel distance ratio (Minecraft's default is 8 times overworld distance, plugin default is 1:1)
 Nether Travel Ratio: 1
+# Whether infection mode is turned on (only relevant for multiple runners)
+Infection Mode Enabled: false
+# Whether players drop heads upon being killed
+Players Drop Heads: true
