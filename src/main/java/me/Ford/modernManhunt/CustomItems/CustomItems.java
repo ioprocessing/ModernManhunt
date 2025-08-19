@@ -7,9 +7,21 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
+import net.minecraft.world.level.saveddata.maps.MapId;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.structure.Structure;
@@ -17,9 +29,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.inventory.meta.components.UseCooldownComponent;
-import org.bukkit.map.MapCursor;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionType;
+import org.bukkit.util.StructureSearchResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -404,20 +416,18 @@ public class CustomItems {
 
         // Set dummy map details
         MapMeta mapMeta = (MapMeta) trialMap.getItemMeta();
-        mapMeta.setColor(Color.fromRGB(206, 112, 43));
+
+        // Set the color
+        mapMeta.setColor(Color.fromRGB(194, 107, 76));
         TextComponent map_name = Component.text("Trial Explorer Map", TextColor.color(206, 112, 43)).decoration(TextDecoration.ITALIC, false);
         mapMeta.customName(map_name);
 
-        mapMeta.lore(Arrays.asList(
-                Component.text("A mysterious map that leads to trial chambers.").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
-                Component.text()
-                        .append(Component.text("USE", TextColor.color(206, 112, 43)).decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text( " to locate the nearest trial chambers.").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false))
-                        .build()));
+        mapMeta.lore(Arrays.asList(Component.text("A mysterious map that leads").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
+                Component.text("to the nearest Trial Chambers.").color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false)));
+
 
         // Add custom tag that we'll check for later
         mapMeta.getPersistentDataContainer().set(Keys.DUMMY_MAP, PersistentDataType.BOOLEAN, true);
-        mapMeta.getPersistentDataContainer().set(Keys.CUSTOM_ITEM, PersistentDataType.BOOLEAN, true);
 
         trialMap.setItemMeta(mapMeta);
 
@@ -425,27 +435,71 @@ public class CustomItems {
     }
 
     public static ItemStack trialChamberMap(Player p) {
+        World bukkitWorld = p.getWorld();
+        ServerLevel nmsWorld = ((CraftWorld) bukkitWorld).getHandle();
 
-        // Create map ItemStack
-        ItemStack trialMap = Bukkit.createExplorerMap(p.getWorld(), p.getLocation(), Structure.TRIAL_CHAMBERS.getStructureType(), MapCursor.Type.TRIAL_CHAMBERS, 10000, false);
-        // If no trial chambers are located, check unexplored chunks
-        if (trialMap == null) {
-            trialMap = Bukkit.createExplorerMap(p.getWorld(), p.getLocation(), Structure.TRIAL_CHAMBERS.getStructureType(), MapCursor.Type.TRIAL_CHAMBERS, 10000, true);
-            // If still no results, give back the dummy map
-            if (trialMap == null)
-                return dummyTrialMap();
+        // Locate nearest Trial Chambers structure
+        StructureSearchResult result = bukkitWorld.locateNearestStructure(
+                p.getLocation(),
+                Structure.TRIAL_CHAMBERS,
+                10_000,
+                false
+        );
+        if (result == null) {
+            p.sendMessage(Component.text("No Trial Chambers found nearby."));
+            return null;
         }
+        Location loc = result.getLocation();
+
+        // Create explorer map via NMS
+        net.minecraft.world.item.ItemStack nmsMap = MapItem.create(
+                nmsWorld,
+                loc.getBlockX(),
+                loc.getBlockZ(),
+                (byte) 2,
+                true,
+                true
+        );
+
+        MapItemSavedData mapData = MapItem.getSavedData(nmsMap, nmsWorld);
+        if (mapData == null) {
+            mapData = MapItemSavedData.createFresh(
+                    loc.getBlockX(),
+                    loc.getBlockZ(),
+                    (byte) 2,
+                    true,
+                    true,
+                    nmsWorld.dimension()
+            );
+            MapId mapId = nmsMap.get(DataComponents.MAP_ID);
+            nmsWorld.setMapData(mapId, mapData);
+        }
+
+        // Render water as orange outlines
+        MapItem.renderBiomePreviewMap(nmsWorld, nmsMap);
+
+        // Add the Trial Chambers decoration
+        Holder<MapDecorationType> decorationType = MapDecorationTypes.TRIAL_CHAMBERS;
+        MapItemSavedData.addTargetDecoration(
+                nmsMap,
+                new BlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()),
+                "Trial Chambers",
+                decorationType
+        );
+
+        // Convert to Bukkit ItemStack and set display name
+        ItemStack trialMap = CraftItemStack.asBukkitCopy(nmsMap);
 
         // Style the map like the dummy map
         MapMeta meta = (MapMeta) trialMap.getItemMeta();
         ItemMeta dummyMeta = dummyTrialMap().getItemMeta();
         List<Component> dummyLore = dummyMeta.lore();
-        dummyLore.removeLast();
         meta.lore(dummyLore);
         meta.customName(dummyMeta.customName());
 
         // Add custom tag that we'll check for later
         meta.getPersistentDataContainer().set(Keys.CUSTOM_ITEM, PersistentDataType.BOOLEAN, true);
+        meta.getPersistentDataContainer().remove(Keys.DUMMY_MAP);
 
         trialMap.setItemMeta(meta);
 

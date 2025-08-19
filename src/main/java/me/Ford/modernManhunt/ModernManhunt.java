@@ -3,6 +3,7 @@ package me.Ford.modernManhunt;
 import me.Ford.modernManhunt.Commands.ManhuntCommand;
 import me.Ford.modernManhunt.Commands.RecipesCommand;
 import me.Ford.modernManhunt.CustomItemListeners.HeadListener;
+import me.Ford.modernManhunt.CustomItemListeners.MapCraftListener;
 import me.Ford.modernManhunt.CustomItemListeners.PrimedPickaxeListener;
 import me.Ford.modernManhunt.CustomItemListeners.SafetyListener;
 import me.Ford.modernManhunt.CustomItems.CustomRecipes;
@@ -77,6 +78,7 @@ public final class ModernManhunt extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SpectatorInteractionListener(), instance);
         getServer().getPluginManager().registerEvents(new MapUseListener(), instance);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), instance);
+        getServer().getPluginManager().registerEvents(new MapCraftListener(), instance);
         if (Config.customBarteringEnabled)
             getServer().getPluginManager().registerEvents(new PiglinBarterListener(), instance);
         if (Config.strengthModifierEnabled)
