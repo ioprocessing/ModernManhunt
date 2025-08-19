@@ -4,6 +4,7 @@ import me.Ford.modernManhunt.Collections;
 import me.Ford.modernManhunt.Functions;
 import me.Ford.modernManhunt.Keys;
 import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -42,8 +43,13 @@ public class PrimedPickaxeListener implements Listener {
             // Replace the dropped items and show the flame particle effects
             drop.setAmount(stack_size);
             event.setDropItems(false);
-            b.getWorld().dropItemNaturally(b.getLocation(), drop);
-            b.getWorld().playEffect(b.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
+
+            // Create location in the middle of the block instead of the edge coordinates
+            Location loc = b.getLocation();
+            Location midLoc = new Location(loc.getWorld(), loc.getX() + 0.5, loc.getY(), loc.getZ() + 0.5);
+
+            b.getWorld().dropItemNaturally(midLoc, drop);
+            b.getWorld().playEffect(midLoc, Effect.MOBSPAWNER_FLAMES, 1);
 
             // Increment EXP values on the pickaxe
             ItemMeta meta = handItem.getItemMeta();
@@ -53,7 +59,7 @@ public class PrimedPickaxeListener implements Listener {
 
             // If the total stored exp > 1, deposit the XP in the world like a furnace would
             if(currentExp >= 1.0f) {
-                ExperienceOrb orb = b.getWorld().spawn(b.getLocation(), ExperienceOrb.class);
+                ExperienceOrb orb = b.getWorld().spawn(midLoc, ExperienceOrb.class);
                 orb.setExperience(1);
                 meta.getPersistentDataContainer().set(Keys.PRIMED_PICK_EXP, PersistentDataType.FLOAT, currentExp - 1.0f);
             }

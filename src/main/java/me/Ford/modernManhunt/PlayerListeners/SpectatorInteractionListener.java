@@ -8,8 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -35,7 +35,7 @@ public class SpectatorInteractionListener implements Listener {
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
         // Cancel all damage dealt by spectators
-        if (!(e.getEntity() instanceof Player))
+        if (!(e.getDamager() instanceof Player))
             return;
         if (e.getDamager().hasMetadata("DeadRunner"))
             e.setCancelled(true);
@@ -51,11 +51,9 @@ public class SpectatorInteractionListener implements Listener {
     }
 
     @EventHandler
-    public void onEntityInteract(EntityInteractEvent e) {
+    public void onEntityInteract(PlayerInteractEntityEvent e) {
         // Cancel all interactions of entities from spectators (like villager trading)
-        if (!(e.getEntity() instanceof Player))
-            return;
-        if (e.getEntity().hasMetadata("DeadRunner"))
+        if (e.getPlayer().hasMetadata("DeadRunner"))
             e.setCancelled(true);
     }
 

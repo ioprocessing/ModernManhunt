@@ -59,7 +59,6 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
             case "runner" -> {
                 if (
                         ((args.length == 1) || ((args.length == 2) && !(args[1].equalsIgnoreCase("list"))))
-                                || ((args.length == 3) && (Bukkit.getPlayer(args[2].toLowerCase()) == null))
                 )
                     return false;
                 switch (args[1].toLowerCase()) {
@@ -153,8 +152,8 @@ public class ManhuntCommand implements CommandExecutor, TabExecutor {
             case "start" -> {
                 if (!(Functions.mmRunners.getEntries().isEmpty()) && !(Functions.mmHunters.getEntries().isEmpty())) {
                     for(Player participant : participantArray)
-                        if (participant.isDead() && participant.isOnline()) {
-                            s.sendRawMessage("§cAll players must be alive to begin!");
+                        if (participant.isDead() || !participant.isOnline()) {
+                            s.sendRawMessage("§cAll players must be alive and present to begin!");
                             return true;
                         } else if (participant.hasMetadata("BeingHunted")) {
                             s.sendRawMessage("§cThe ongoing manhunt must end before another can begin!");

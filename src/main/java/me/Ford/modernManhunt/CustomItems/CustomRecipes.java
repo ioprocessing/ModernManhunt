@@ -222,7 +222,7 @@ public final class CustomRecipes {
         // Now just substitute the ingredients
         trialMapRecipe.setIngredient('C', Material.COPPER_BLOCK);
         trialMapRecipe.setIngredient('O', Material.COMPASS);
-        trialMapRecipe.setIngredient('O', Material.PAPER);
+        trialMapRecipe.setIngredient('P', Material.PAPER);
 
         // Don't duplicate recipe
         if (Bukkit.getRecipe(Keys.TRIAL_MAP_RECIPE) != null) {
