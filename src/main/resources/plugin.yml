@@ -1,0 +1,21 @@
+name: ModernManhunt
+version: '1.0.0'
+main: org.ioprocessing.modernManhunt.Core
+api-version: '26.1.2'
+authors: [ Ford ]
+description: Minecraft Manhunt plugin for 26.1.2
+permissions:
+  modernmanhunt.command.list:
+    default: true
+  modernmanhunt.command.reload:
+    default: op
+  modernmanhunt.command.start:
+    default: op
+  modernmanhunt.command.give:
+    default: op
+  modernmanhunt.command.manage-teams:
+    default: op
+  modernmanhunt.command.handicaps:
+    default: op
+  modernmanhunt.command.boons:
+    default: op

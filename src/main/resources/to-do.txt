@@ -1,0 +1,6 @@
+Features to add:
+- Bed queue for hunters
+- cache teams for restarts/disconnects
+- Remove collision for scouts
+- Fortress compass fix
+- Handicap option check for fortress compass

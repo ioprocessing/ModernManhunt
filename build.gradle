@@ -1,0 +1,46 @@
+plugins {
+    id 'java-library'
+    id 'io.papermc.paperweight.userdev' version '2.0.0-beta.21'
+    id 'io.freefair.lombok' version "9.1.0"
+    id 'com.gradleup.shadow' version "9.2.2"
+}
+
+group = 'org.ioprocessing'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+    maven { url = 'https://jitpack.io' }
+}
+
+dependencies {
+    paperweight.paperDevBundle("${paper_version}")
+    implementation 'org.commonmark:commonmark:0.26.0'
+
+    implementation 'com.github.hamza-cskn.obliviate-invs:core:4.3.0'
+    implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.3.0'
+    implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.3.0'
+
+    implementation 'org.spongepowered:configurate-gson:4.2.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('paper-plugin.yml') {
+        expand props
+    }
+}
+
+shadowJar {
+    archiveClassifier.set('')
+}
